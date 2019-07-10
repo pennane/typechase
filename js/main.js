@@ -37,12 +37,17 @@ const textsPath = '/assets/texts.json';
 
     }
 
-    // Returns a random item from an array
+    // Return a random item from an array
     function randomFromArray(arr) {
         return arr[Math.floor(Math.random() * arr.length)]
     }
 
-    // For slicing DOM element string into character spans.
+    // Calculate current WPM based on text instance
+    function getWPM(textInstance) {
+        return parseInt((textInstance.characterindex) / 5 / ((Date.now() - textInstance.timing) * 0.0000166666));
+    }
+
+    // Slice DOM element into one character long span elements.
     function sliceString(text, destination, classtag = "sliced") {
         let outputElement = document.createElement('DIV')
         outputElement.setAttribute("class", "slicedString")
@@ -61,7 +66,7 @@ const textsPath = '/assets/texts.json';
         destination.appendChild(outputElement)
     }
 
-    // For WPM style/content changing
+    // Set WPM style/content changes
     function setVisualWPM(wpm = 0, state = "ongoing") {
         const wpmDisplay = document.querySelector("#wpmdisplay")
         const wpmQuery = document.querySelector(".wpm")
@@ -81,10 +86,6 @@ const textsPath = '/assets/texts.json';
         wpmDisplay.textContent = wpm;
     }
 
-    function getWPM(textInstance) {
-        return parseInt((textInstance.characterindex) / 5 / ((Date.now() - textInstance.timing) * 0.0000166666));
-    }
-
     // For character style changing
     function setVisualCharacter(element, state, key) {
         switch (state) {
@@ -94,14 +95,14 @@ const textsPath = '/assets/texts.json';
                 break;
             case "correct":
                 element.style.color = key.failed ? "#7faf23" : "#25b72b"
-                element.style.backgroundColor = key.failed ? "#f7edd9": "#f3f3f3"
+                element.style.backgroundColor = key.failed ? "#f7edd9" : "#f3f3f3"
                 break;
             case "default":
                 element.style.color = "inherit"
-                element.style.backgroundColor =  "inherit"
+                element.style.backgroundColor = "inherit"
                 break;
         }
-        
+
     }
 
     // Create text instances for game to run upon.
@@ -165,7 +166,7 @@ const textsPath = '/assets/texts.json';
         let keycode = event.keyCode;
 
         // If instance is not in focus, or the instance is completed, return.
-        if (textInstance.completed || !textInstance.focused ) {
+        if (textInstance.completed || !textInstance.focused) {
             return false;
         }
 
@@ -184,15 +185,15 @@ const textsPath = '/assets/texts.json';
         }
     }
 
-    // For typing listening
+    // For typing listening 
     function typingListener(event, textInstance) {
         let key = event.key;
         let keycode = event.keyCode;
         let characterindex = textInstance.characterindex
-        
 
-        if (!validKey(event, textInstance)) return null;     
-        
+
+        if (!validKey(event, textInstance)) return null;
+
         if (!textInstance.timing) {
             textInstance.timing = Date.now()
         }
@@ -214,27 +215,27 @@ const textsPath = '/assets/texts.json';
             keyState = "correct";
 
             keyToMatch.typed = true;
-           
+
         } else if (keycode === 8 || key === "Backspace") {
             keyState = "default";
 
-            characterindex === 0 ? null : keyElement = document.querySelector(`.${slicedClassTag}${characterindex-1}`)
-            
+            characterindex === 0 ? null : keyElement = document.querySelector(`.${slicedClassTag}${characterindex - 1}`)
+
         } else {
             keyState = "incorrect";
 
             keyToMatch.failed = true;
             textInstance.failed++;
         }
-        
+
         setVisualCharacter(keyElement, keyState, keyToMatch)
 
         if (characterindex > 0) {
-            
+
             textInstance.wpm = getWPM(textInstance)
             setVisualWPM(textInstance.wpm, "ongoing", textInstance)
         }
-        
+
 
         // Change index of the ongoing character
         if (keycode === 8 || key === "Backspace") {
@@ -247,14 +248,13 @@ const textsPath = '/assets/texts.json';
             textInstance.completed = true;
             setVisualWPM(textInstance.wpm, "completed", textInstance)
         }
-    
+
     }
 
     function resetTextInstance(textInstance, destination) {
         textInstance = createTextInstance(textInstance.text.content)
         loadText(textInstance, destination)
         setVisualWPM(0, "default")
-
         return textInstance;
     }
 
@@ -269,7 +269,7 @@ const textsPath = '/assets/texts.json';
         typingListener(event, textInstance)
     })
 
-    
+
     const { texts } = await loadJSON(textsPath)
     const textBox = document.querySelector("#textbox")
 
