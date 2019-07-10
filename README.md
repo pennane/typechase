@@ -9,3 +9,6 @@ Currently the old (still fully working) version found [here](https://arttu.penna
 * Give ux feedback on mistakes and on text completions
 * Renew design and/or ui
 * (Event based dom interaction ?)
+* Make info box fade away after completing one text
+* Make instances where failed characters have been left unfixed to count as unaccepted results.
+* Show accurary, and save it. (already counts the amount of missed presses)
