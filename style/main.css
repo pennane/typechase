@@ -142,25 +142,21 @@ a:hover {
     align-items: center;
 }
 
-div.wpm {
+div.stats {
     width: calc(300px + 20vw);
     max-width: calc(55% + 5vw);
     border: 2px groove #ffffff;
     padding: 0.3em;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
 }
 
-.wpm {
+.stats {
     transition: all 0.2s;
 }
 
-span.wpm {
+span.stats {
     height: 100%;
     font-size: 1.6em;
-}
-
-@media screen and (min-width: 769px) {
-    #boxparent {}
 }

@@ -39,16 +39,23 @@
             <div id="text">
                <div id="help"><span>Kirjoita laatikon teksti, ja saa selville kirjoitusnopeutesi </span> <a href="https://en.wikipedia.org/wiki/Words_per_minute" target="_blank">WPM</a><span class="small"> (sanat minuutissa)</span> </div>
                 <div class="customize">
-                    <div class="button" id="satunnainen">Satunnainen</div>
-                    <div class="button" id="omateksti">Oma teksti</div>
-                    <div class="button" id="uudelleen"><i class="fa fa-undo" aria-hidden="true"></i></div>
+                    <div class="button" id="randomtext">Satunnainen</div>
+                    <div class="button" id="customtext">Oma teksti</div>
+                    <div class="button" id="resettext"><i class="fa fa-undo" aria-hidden="true"></i></div>
                 </div>
                 <div id="boxparent">
                     <span id="textbox">Hey guys i am to be sliced up</span>
                 </div>
-                <div class="wpm">
-                    <span id="wpmdisplay" class="wpm">0</span>
-                    <span class="wpm">&nbsp;wpm</span>
+                <div class="stats">
+                    <div>
+                            <span id="wpmdisplay" class="stats">0</span>
+                            <span class="stats">&nbsp;wpm</span>
+                    </div>
+                    <div>
+                            <span id="accuracydisplay" class="stats">100</span>
+                            <span class="stats">&nbsp;%</span>
+                    </div>
+                    
                 </div>
             </div>
             <div id="unfocus"></div>
@@ -56,8 +63,8 @@
                 <span> Kirjoita / Copy paste</span>
                 <input id="texttoload" type="text">
                 <div class="input-settings">
-                    <div class="button" id="kumoa">Kumoa</div>
-                    <div class="button" id="ok">Ok</div>
+                    <div class="button" id="cancelcustomtext">Kumoa</div>
+                    <div class="button" id="engagecustomtext">Ok</div>
                 </div>
             </div>
         </div>

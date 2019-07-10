@@ -1,8 +1,10 @@
 "use strict";
 
 let textInstance;
+let focused = true;
 const slicedClassTag = "char";
 const textsPath = '/assets/texts.json';
+const destination = document.querySelector("#textbox");
 
 (async () => {
 
@@ -42,13 +44,8 @@ const textsPath = '/assets/texts.json';
         return arr[Math.floor(Math.random() * arr.length)]
     }
 
-    // Calculate current WPM based on text instance
-    function getWPM(textInstance) {
-        return parseInt((textInstance.characterindex) / 5 / ((Date.now() - textInstance.timing) * 0.0000166666));
-    }
-
     // Slice DOM element into one character long span elements.
-    function sliceString(text, destination, classtag = "sliced") {
+    function sliceString(text, classtag = "sliced") {
         let outputElement = document.createElement('DIV')
         outputElement.setAttribute("class", "slicedString")
 
@@ -66,25 +63,45 @@ const textsPath = '/assets/texts.json';
         destination.appendChild(outputElement)
     }
 
+    // Calculate current WPM based on text instance
+
+    function calculateMissedCharacters(textInstance) {
+        return textInstance.text.characters.reduce((accumulated, current)=> current.failed ? accumulated + 1 : accumulated, 0)
+    }
+
+    function getWPM(textInstance) {
+        return parseInt((textInstance.characterindex) / 5 / ((Date.now() - textInstance.timing) * 0.0000166666));
+    }
+
+    function getAccuracy(textInstance) {
+        const missed = calculateMissedCharacters(textInstance)
+        const characterindex = textInstance.maxcharacterindex
+        return parseInt( (characterindex-missed) / characterindex * 100)
+    }
+
     // Set WPM style/content changes
-    function setVisualWPM(wpm = 0, state = "ongoing") {
+    function setVisualStats(textInstance, state = "ongoing") {
+        let { wpm= 0, accuracy = 100 } = textInstance.stats;
         const wpmDisplay = document.querySelector("#wpmdisplay")
-        const wpmQuery = document.querySelector(".wpm")
+        const accuracyDisplay = document.querySelector("#accuracydisplay")
+        const statsQuery = document.querySelector(".stats")
         wpmDisplay.textContent = wpm;
 
         switch (state) {
-            case "ongoing":
-                wpmQuery.style.color = "inherit";
-                wpmQuery.style.backgroundColor = "inherit";
+            case "default":
+                statsQuery.style.color = "inherit";
+                statsQuery.style.backgroundColor = "inherit";
                 break;
             case "completed":
-                wpmQuery.style.color = "white";
-                wpmQuery.style.backgroundColor = "lightgreen";
+                statsQuery.style.color = "white";
+                statsQuery.style.backgroundColor = "lightgreen";
                 break;
         }
 
         wpmDisplay.textContent = wpm;
+        accuracyDisplay.textContent = accuracy;
     }
+
 
     // For character style changing
     function setVisualCharacter(element, state, key) {
@@ -103,6 +120,53 @@ const textsPath = '/assets/texts.json';
                 break;
         }
 
+    }
+
+    // Toggle between game focus states
+    function changeFocusState(focus = undefined, textInstance) {
+        const unfocusElement = document.getElementById("unfocus");
+        if (focus == true) {
+            focused = true;
+            textInstance.focused = false;
+            unfocusElement.style.zIndex = 2;
+            unfocusElement.style.opacity = 100;
+        } else if (focus == false) {
+            focused = false
+            textInstance.focused = true;
+            unfocusElement.style.zIndex = -1;
+            unfocusElement.style.opacity = 0;
+        }
+    }
+
+    // Load a new text into the game and set text instance as loaded.
+    function loadText(textInstance) {
+        sliceString(textInstance.text.content, slicedClassTag)
+        textInstance.loaded = true;
+        return null;
+    }
+
+    // Check if received key is valid and needs to be registered.
+    function validKey(event, textInstance) {
+        let keycode = event.keyCode;
+
+        // If instance is not in focus, or the instance is completed, return.
+        if (textInstance.completed || !textInstance.focused) {
+            return false;
+        }
+
+        // If the key does not need to be registered, return.
+        if (event.ctrlKey || event.metaKey || event.altKey) {
+            return false;
+        }
+
+        // Check if key is valid
+        let valid = (keycode === 8) || (keycode > 47 && keycode < 58) || (keycode === 32) || (keycode === 13) || (keycode > 64 && keycode < 91) || (keycode > 95 && keycode < 112) || (keycode > 185 && keycode < 193) || (keycode > 218 && keycode < 223);
+
+        if (valid) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Create text instances for game to run upon.
@@ -143,54 +207,78 @@ const textsPath = '/assets/texts.json';
                 characters: characters,
                 customText: custom
             },
-            wpm: null,
-            failed: 0,
+            keypresses: {
+                ok: 0,
+                fail: 0
+            },
+            stats: {
+                wpm: undefined,
+                accuracy: undefined
+            },
             completed: false,
             focused: true,
             loaded: false,
             characterindex: 0,
+            maxcharacterindex: 0,
             timing: null
         }
         return textInstance
     }
 
-    // Load a new text into the game and set text instance as loaded.
-    function loadText(textInstance, destination) {
-        sliceString(textInstance.text.content, destination, slicedClassTag)
-        textInstance.loaded = true;
-        return null;
+    function resetTextInstance(textInstance) {
+        textInstance = createTextInstance(textInstance.text.content)
+        setTextInstance(textInstance)
     }
 
-    // Check if received key is valid and needs to be registered.
-    function validKey(event, textInstance) {
-        let keycode = event.keyCode;
+    function setTextInstance(textInstance) {
+        loadText(textInstance)
+        setVisualStats(textInstance, "default")
+        return textInstance
+    }
 
-        // If instance is not in focus, or the instance is completed, return.
-        if (textInstance.completed || !textInstance.focused) {
-            return false;
+    // Create a text instance from a custon text
+    function setCustomTextInstance(customText, textInstance) {
+        customText = customText.trim()
+        // If the custom text is faulty
+        if (!customText || customText.length < 1) {
+            return;
         }
 
-        // If the key does not need to be registered, return.
-        if (event.ctrlKey || event.metaKey || event.altKey) {
-            return false;
-        }
+        textInstance = createTextInstance(customText, true)
+        setTextInstance(textInstance)
+        openCustomTextMenu(false, textInstance)
 
-        // Check if key is valid
-        let valid = (keycode === 8) || (keycode > 47 && keycode < 58) || (keycode === 32) || (keycode === 13) || (keycode > 64 && keycode < 91) || (keycode > 95 && keycode < 112) || (keycode > 185 && keycode < 193) || (keycode > 218 && keycode < 223);
+        return textInstance
+    }
 
-        if (valid) {
-            return true;
-        } else {
-            return false;
+    function setRandomTextInstance(texts, textInstance) {
+        textInstance = createTextInstance(randomFromArray(texts))
+        setTextInstance(textInstance)
+        return textInstance
+    }
+
+    // Opens and closes custom text menu
+    function openCustomTextMenu(state, textInstance) {
+        const textmenu = document.getElementById("input-text")
+
+        if (state === true) {
+            changeFocusState(true, textInstance)
+
+            textmenu.style.zIndex = 2;
+            textmenu.style.opacity = 100;
+        } else if (state === false) {
+            changeFocusState(false, textInstance)
+
+            textmenu.style.zIndex = -1;
+            textmenu.style.opacity = 0;
         }
     }
 
-    // For typing listening 
+    // Main listening function
     function typingListener(event, textInstance) {
         let key = event.key;
         let keycode = event.keyCode;
         let characterindex = textInstance.characterindex
-
 
         if (!validKey(event, textInstance)) return null;
 
@@ -216,6 +304,8 @@ const textsPath = '/assets/texts.json';
 
             keyToMatch.typed = true;
 
+            textInstance.keypresses.ok++;
+
         } else if (keycode === 8 || key === "Backspace") {
             keyState = "default";
 
@@ -224,39 +314,44 @@ const textsPath = '/assets/texts.json';
         } else {
             keyState = "incorrect";
 
-            keyToMatch.failed = true;
-            textInstance.failed++;
+            keyToMatch.typed = false;
+
+            if (key !== "Backspace") {
+                keyToMatch.failed = true;
+            }
+            
+
+            textInstance.keypresses.fail++;
         }
 
         setVisualCharacter(keyElement, keyState, keyToMatch)
 
         if (characterindex > 0) {
 
-            textInstance.wpm = getWPM(textInstance)
-            setVisualWPM(textInstance.wpm, "ongoing", textInstance)
+            textInstance.stats.wpm = getWPM(textInstance)
+            textInstance.stats.accuracy = getAccuracy(textInstance)
+            setVisualStats(textInstance, "default")
         }
-
 
         // Change index of the ongoing character
         if (keycode === 8 || key === "Backspace") {
             characterindex > 0 ? textInstance.characterindex-- : null;
         } else {
             textInstance.characterindex++;
+            
         }
 
         if (textInstance.characterindex >= textInstance.text.characters.length) {
             textInstance.completed = true;
-            setVisualWPM(textInstance.wpm, "completed", textInstance)
+            setVisualStats(textInstance, "completed")
+        }
+
+        if (textInstance.characterindex > textInstance.maxcharacterindex ) {
+            textInstance.maxcharacterindex = textInstance.characterindex
         }
 
     }
 
-    function resetTextInstance(textInstance, destination) {
-        textInstance = createTextInstance(textInstance.text.content)
-        loadText(textInstance, destination)
-        setVisualWPM(0, "default")
-        return textInstance;
-    }
 
     // Prevent default behaviour for different browser features.
     document.addEventListener("keypress", event => {
@@ -265,17 +360,42 @@ const textsPath = '/assets/texts.json';
         }
     });
 
+
+
+    const { texts } = await loadJSON(textsPath)
+    textInstance = setRandomTextInstance(texts)
+
+
+    // Detect keypresses and handle them in typing listener
     document.addEventListener("keydown", (event) => {
         typingListener(event, textInstance)
     })
 
+    // Handle open custom text "events"
+    document.querySelector("#customtext").addEventListener('click', (event) => {
+        openCustomTextMenu(true, textInstance)
+    })
 
-    const { texts } = await loadJSON(textsPath)
-    const textBox = document.querySelector("#textbox")
+    // Handle custom text cancel "events"
+    document.querySelector("#cancelcustomtext").addEventListener('click', (event) => {
+        openCustomTextMenu(false, textInstance)
+    })
 
-    textInstance = createTextInstance(randomFromArray(texts))
+    // Handle custom text ok "events"
+    document.querySelector("#engagecustomtext").addEventListener('click', (event) => {
+        let customText = document.getElementById("texttoload").value;
+        textInstance = setCustomTextInstance(customText, textInstance)
+    })
 
-    loadText(textInstance, textBox)
+    // Handle reset text "events"
+    document.querySelector("#resettext").addEventListener('click', (event) => {
+        resetTextInstance(textInstance)
+    })
+
+    // Handle random text "events"
+    document.querySelector("#randomtext").addEventListener('click', (event) => {
+        textInstance = setRandomTextInstance(texts)
+    })
 
 })();
 
