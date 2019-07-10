@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/main.css">
+    <script src="https://use.fontawesome.com/b346d88d65.js"></script>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126133790-1"></script>
+        <script>
+            function gtag() {
+                dataLayer.push(arguments)
+            }
+            window.dataLayer = window.dataLayer || [],
+            gtag("js", new Date),
+            gtag("config", "UA-126133790-1")
+        </script>
+
+    <meta content="summary_large_image" name="twitter:card">
+    <meta charset="utf-8">
+    <meta content="typechase the typing game" name="description">
+    <meta content="Arttu Pennanen" name="author">
+
+    <meta content="https://arttu.pennanen.org/sub/typechase" property="og:url">
+    <meta content="A typing game where you can learn to type and use your own texts while doing so." property="og:description">
+    <meta content="typechase" property="og:title">
+    <meta content="website" property="og:type">
+
+    <meta content="typechase" name="twitter:title">
+    <meta content="A typing game where you can learn to type and use your own texts while doing so." name="twitter:description">
+   
+    <title>Typechase</title>
+</head>
+
+<body>
+    <main>
+        <div id="typechase">
+            <div id="text">
+               <div id="help"><span>Kirjoita laatikon teksti, ja saa selville kirjoitusnopeutesi </span> <a href="https://en.wikipedia.org/wiki/Words_per_minute" target="_blank">WPM</a><span class="small"> (sanat minuutissa)</span> </div>
+                <div class="customize">
+                    <div class="button" id="satunnainen">Satunnainen</div>
+                    <div class="button" id="omateksti">Oma teksti</div>
+                    <div class="button" id="uudelleen"><i class="fa fa-undo" aria-hidden="true"></i></div>
+                </div>
+                <div id="boxparent">
+                    <span id="textbox"></span>
+                </div>
+                <div class="wpm">
+                    <span id="wpmdisplay" class="wpm">0</span><span class="wpm">&nbsp;wpm</span>
+                </div>
+            </div>
+            <div id="unfocus"></div>
+            <div id="input-text">
+                <span> Kirjoita / Copy paste</span>
+                <input id="texttoload" type="text">
+                <div class="input-settings">
+                    <div class="button" id="kumoa">Kumoa</div>
+                    <div class="button" id="ok">Ok</div>
+                </div>
+            </div>
+        </div>
+    </main>
+     <script src="js/texts.js" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+</body>
+
+</html>

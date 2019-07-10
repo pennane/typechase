@@ -1,0 +1,166 @@
+body {
+    overflow: hidden;
+	font-family: serif;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+a {
+    text-decoration: none;
+
+    color: #3562aa;
+}
+
+#help {
+    max-width: 75vw;
+    margin-top: 1em;
+    transition: opacity 5.2s;
+    opacity: 0.9;
+
+}
+
+#help span {}
+
+a:hover {
+    color: #1e70f4;
+}
+
+.button {
+    text-align: center;
+    border: 2px solid #e7e7e7;
+    padding: 0.1em;
+    white-space: nowrap;
+    overflow: hidden;
+
+}
+
+.small {
+    font-size: 0.8em;
+}
+
+#satunnainen {
+    width: 100px;
+}
+
+#omateksti {
+    width: 100px;
+}
+
+.button:hover {
+    cursor: pointer;
+    background-color: #e5e5e5;
+}
+
+#typechase {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#uudelleen {
+    width: 30px;
+
+}
+
+#unfocus {
+    opacity: 0;
+    z-index: -1;
+    height: 1000vh;
+    width: 1000vw;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: opacity 0.4s;
+    overflow: hidden;
+}
+
+.input-settings {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#input-text {
+    opacity: 0;
+    z-index: -1;
+    position: absolute;
+    background-color: white;
+    height: calc(70px + 0.4vw);
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    justify-content: space-around;
+}
+
+#input-text span {
+    text-align: center;
+}
+
+.customize {
+    width: calc(300px + 20vw);
+    max-width: calc(55% + 5vw);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px groove #ffffff;
+    padding: 0.3em;
+    transition: all 0.2s;
+}
+
+.customize div {
+    margin: 0 0.5em;
+}
+
+#boxparent {
+    width: calc(300px + 20vw);
+    max-width: calc(55% + 5vw);
+    margin: 1em 3em;
+    color: #999;
+    border-left: 2px solid #999;
+    padding-left: 1em;
+    transition: all 0.2s;
+}
+
+#textbox {
+    font-size: 1.3em;
+    line-height: 1.7;
+    word-wrap: break-word;
+}
+
+#text {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+div.wpm {
+    width: calc(300px + 20vw);
+    max-width: calc(55% + 5vw);
+    border: 2px groove #ffffff;
+    padding: 0.3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wpm {
+    transition: all 0.2s;
+}
+
+span.wpm {
+    height: 100%;
+    font-size: 1.6em;
+}
+
+@media screen and (min-width: 769px) {
+    #boxparent {}
+}
