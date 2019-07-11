@@ -501,15 +501,9 @@ function hashFnv32a(str, asString, seed) {
         return texts
     }
 
-    function initStorage(storage, texts) {  
-        storage.set("texts", texts)
-    }
-
     const textdata = await loadJSON(textsPath)
     const texts = await createTextsObject(textdata.texts)
     textInstance = setRandomTextInstance(texts)
-
-    initStorage(storage, texts)
 
     // Detect keypresses and handle them in typing listener
     document.addEventListener("keydown", (event) => {
