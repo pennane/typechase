@@ -11,11 +11,16 @@ class Storage {
 
     }
     get(item) {
-        return this.storage.getItem(item)
+        return JSON.parse(this.storage.getItem(item))
     }
     remove(item) {
         return this.storage.removeItem(item)
     }
+
+    keys() {
+        return Object.keys(this.storage)
+    }
+
     clear() {
         return this.storage.clear()
     }
@@ -61,10 +66,10 @@ function hashFnv32a(str, asString, seed) {
 
 (async () => {
     "use strict";
-    
+
     let storage = new Storage()
     let focused = true;
-    
+
     // Mobile check
     window.addEventListener("load", () => {
         window.mobilecheck = function () {
@@ -164,7 +169,7 @@ function hashFnv32a(str, asString, seed) {
                 break;
             case "completed":
                 statsQuery.style.color = "white";
-                statsQuery.style.backgroundColor = missing > 0 ? "#f5b645" : "lightgreen";
+                statsQuery.style.backgroundColor = missing > 0 ? "#f5b645" : "#6ae66c";
                 break;
         }
 
@@ -175,7 +180,7 @@ function hashFnv32a(str, asString, seed) {
     function pushInstanceToStorage(instance, storage) {
         if (!instance.timing) return;
         let trimmedInstance = createTrimmedTextInstance(instance)
-        storage.set(instance.timing, trimmedInstance)
+        storage.set(`chase_${instance.timing}`, trimmedInstance)
     }
 
 
@@ -244,8 +249,8 @@ function hashFnv32a(str, asString, seed) {
             return false;
         }
     }
-    
-    
+
+
 
     // Create text instances for game to run upon.
     function createTextInstance(text, custom = false) {
@@ -254,7 +259,7 @@ function hashFnv32a(str, asString, seed) {
         let title;
         if (custom) {
             content = text
-            textHash = hashFnv32a(text, true)
+            textHash = hashFnv32a(text, false)
             title = text.split(" ").slice(0, 6).join(" ")
         } else {
             content = text.content
@@ -304,7 +309,8 @@ function hashFnv32a(str, asString, seed) {
             },
             stats: {
                 wpm: undefined,
-                accuracy: undefined
+                accuracy: undefined,
+                skillLevel: undefined
             },
             custom: custom,
             completed: false,
@@ -316,7 +322,7 @@ function hashFnv32a(str, asString, seed) {
         }
         return textInstance
     }
-    
+
     function createTrimmedTextInstance(textInstance) {
         let full = textInstance
         let trimmedInstance = {
@@ -327,7 +333,8 @@ function hashFnv32a(str, asString, seed) {
             },
             stats: {
                 wpm: full.stats.wpm,
-                accuracy: full.stats.accuracy
+                accuracy: full.stats.accuracy,
+                skillLevel: full.stats.skillLevel
             },
             custom: full.custom,
             timing: full.timing
@@ -386,10 +393,10 @@ function hashFnv32a(str, asString, seed) {
         if (state === true) {
             changeFocusState(true, textInstance)
 
-            textmenu.style.zIndex = 2;
+            textmenu.style.zIndex = 3;
             textmenu.style.opacity = 100;
 
-        // Close
+            // Close
         } else if (state === false) {
             changeFocusState(false, textInstance)
 
@@ -458,9 +465,12 @@ function hashFnv32a(str, asString, seed) {
         setVisualCharacter(keyElement, keyState, keyToMatch)
 
         if (characterindex > 0) {
-
-            textInstance.stats.wpm = getWPM(textInstance)
-            textInstance.stats.accuracy = getAccuracy(textInstance)
+            let wpm = getWPM(textInstance)
+            let accuracy = getAccuracy(textInstance)
+            let skillLevel = getSkillLevel(wpm)
+            textInstance.stats.wpm = wpm
+            textInstance.stats.accuracy = accuracy
+            textInstance.stats.skillLevel = skillLevel
             setVisualStats(textInstance, "default")
         }
 
@@ -477,8 +487,9 @@ function hashFnv32a(str, asString, seed) {
             let missing = calculateMissingCharacters(textInstance)
             if (textInstance.stats.accuracy > 25 && textInstance.stats.wpm > 10 && !textInstance.custom && missing <= 1) {
                 pushInstanceToStorage(textInstance, storage)
+                loadChaseToDOM(textInstance, document.getElementById("chaselist"))
             } else if (missing > 1) {
-                alert("bruh u had shit missing, that does not count duude")
+              // If not all typed in
             }
         }
 
@@ -488,12 +499,51 @@ function hashFnv32a(str, asString, seed) {
 
     }
 
+    function getSkillLevel(wpm) {
+        let level = 0;
+        if (wpm <= 25) {
+            level = 1;
+        } else if (wpm <= 30) {
+            level = 2;
+        } else if (wpm <= 50) {
+            level = 3;
+        } else if (wpm <= 70) {
+            level = 4
+        } else if (wpm <= 95) {
+            level = 5
+        } else if (wpm <= 120) {
+            level = 6
+        } else if (wpm <= 140) {
+            level = 7
+        }
+        return level
+    }
+
+    function sliceTime(time) {
+        let date = new Date(time)
+        let year = date.getFullYear()
+        let month = date.getMonth() + 1
+        let day = date.getDay()
+        let hours =date.getHours()
+        let minutes =  date.getMinutes()
+        let seconds =date.getSeconds()
+
+        return {
+            year,
+            month,
+            day,
+            hours: hours < 10 ? "0" + hours : hours,
+            minutes: minutes < 10 ? "0" + minutes : minutes,
+            seconds: minutes < 10 ? "0" + minutes : minutes
+        }
+    }
+
     function createTextsObject(data) {
         let texts = {}
         data.forEach((str) => {
             let text = {
                 content: str,
-                id: hashFnv32a(str),
+                id: hashFnv32a(str, true),
                 title: str.split(" ").slice(0, 6).join(" ")
             }
             texts[text.id] = text
@@ -501,9 +551,113 @@ function hashFnv32a(str, asString, seed) {
         return texts
     }
 
+    function createChaseElement(trimmedInstance) {
+
+        let {hours, minutes, seconds, year, month, day} = sliceTime(trimmedInstance.timing)
+
+        let main = document.createElement('div')
+        main.setAttribute('class', 'chase')
+        let head = document.createElement('div')
+        head.setAttribute('class', 'chaseHead')
+        let body = document.createElement('div')
+        body.setAttribute('class', 'chaseBody skillLevel_'+(trimmedInstance.stats.skillLevel | getSkillLevel(trimmedInstance.stats.wpm)))
+        let footer = document.createElement('div')
+        footer.setAttribute('class', 'chaseFooter')
+
+        let title = document.createElement('span')
+        title.setAttribute('class', 'chaseTitle')
+        let id = document.createElement('span')
+        id.setAttribute('class', 'chaseId')
+        let wpmwrapper = document.createElement('div')
+        wpmwrapper.setAttribute('class', 'chaseWpmWrapper')
+        let accwrapper = document.createElement('div')
+        accwrapper.setAttribute('class', 'chaseAccuracyWrapper')
+        let wpm = document.createElement('span')
+        wpm.setAttribute('class', 'chaseWpm')
+        let acc = document.createElement('span')
+        acc.setAttribute('class', 'chaseAccuracy')
+        let wpmtext = document.createElement('span')
+        wpmtext.setAttribute('class', 'chaseWpmText')
+        let acctext = document.createElement('span')
+        acctext.setAttribute('class', 'chaseAccuracyText')
+        let fulltext = document.createElement('span')
+        fulltext.setAttribute('class', 'chaseFullText')
+        let time = document.createElement('div')
+        time.setAttribute('class', 'chaseTime')
+        let hhmmss = document.createElement('span')
+        hhmmss.setAttribute('class', "chasehhmmss")
+        let ddmmyy = document.createElement('span')
+        ddmmyy.setAttribute('class', "chaseddmmyy")
+
+
+
+        title.textContent = trimmedInstance.text.title
+        id.textContent = trimmedInstance.text.id
+
+        wpm.textContent = trimmedInstance.stats.wpm
+        acc.textContent = trimmedInstance.stats.accuracy
+        wpmtext.textContent = "WPM"
+        acctext.textContent = "%"
+
+        fulltext.textContent = trimmedInstance.text.content
+
+        hhmmss.textContent = `${hours}:${minutes}:${seconds}`
+        ddmmyy.textContent = `${day}.${month}.${year}`
+
+        time.appendChild(ddmmyy)
+        time.appendChild(hhmmss)
+
+        wpmwrapper.appendChild(wpm)
+        wpmwrapper.appendChild(wpmtext)
+        accwrapper.appendChild(acc)
+        accwrapper.appendChild(acctext)
+
+        head.appendChild(title)
+        head.appendChild(id)
+        body.appendChild(wpmwrapper)
+        body.appendChild(accwrapper)
+        footer.appendChild(time)
+
+        main.appendChild(head)
+        main.appendChild(body)
+        main.appendChild(footer)
+        main.appendChild(fulltext)
+
+        return main;
+    }
+
+    function getTextHistory(storage) {
+        let history = []
+        storage.keys().forEach(key => {
+            if (key.match(/^chase_[\d]+$/)) {
+                history.push(storage.get(key))
+            }
+        })
+        return history;
+    }
+
+    function loadChaseToDOM(chase, destination) {
+        destination.prepend(createChaseElement(chase))
+    }
+
+
+    function loadHistoryToDOM(history, destination) {
+        console.log(history[0].timing)
+        let sortedHistory = history.sort((a, b) => (a.timing > b.timing) ? 1 : -1)
+        console.log(sortedHistory[0].timing)
+        sortedHistory.forEach((chase) => {
+            loadChaseToDOM(chase, destination)
+
+        })
+    }
+
     const textdata = await loadJSON(textsPath)
     const texts = await createTextsObject(textdata.texts)
     textInstance = setRandomTextInstance(texts)
+
+    const history = getTextHistory(storage);
+
+    loadHistoryToDOM(history, document.getElementById("chaselist"))
 
     // Detect keypresses and handle them in typing listener
     document.addEventListener("keydown", (event) => {

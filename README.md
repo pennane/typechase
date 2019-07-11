@@ -6,19 +6,22 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 ## COMPLETED:
 * All old features now exist in this new version
 * Calculate accuracy
-* Save completed 'chases' to local storage.
+* Save completed 'chases' to local storage and load them to dom.
 * Translated to english
 * Slightly less spaghetti than the old version
 * Chases where characters have been left missing count as unaccepted results
-
+* Added skill levels
+* Newer design!
 
 ## TODO:
 
 * Ensure other browser support
 * Show stats if getting better or worse in text history
-* Text history
-* Renew design and/or ui
+* Calculate average wpm and accuracy
+* Make history be a separate popup window
 * (Custom event based dom interaction ?)
+* ~~Text history~~
+* ~~Renew design and/or ui~~
 * ~~Save scores to local storage~~
 * ~~Fix restart, new text, and custom text buttons to work~~
 * ~~Give ux feedback on mistakes and on text completions~~ 
