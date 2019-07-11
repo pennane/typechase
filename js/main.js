@@ -63,6 +63,11 @@ function hashFnv32a(str, asString, seed) {
     return hval >>> 0;
 }
 
+function hash64(str, asString) {
+    var h1 = hashFnv32a(str, asString);  // returns 32 bit (as 8 byte hex string)
+    return h1 + hashFnv32a(h1 + str, asString);  // 64 bit (as 16 byte hex string)
+}
+
 
 (async () => {
     "use strict";
@@ -257,7 +262,7 @@ function hashFnv32a(str, asString, seed) {
         let title;
         if (custom) {
             content = text
-            textHash = hashFnv32a(text, true)
+            textHash = hash64(text, true)
             title = text.split(" ").slice(0, 6).join(" ")
         } else {
             content = text.content
@@ -553,7 +558,7 @@ function hashFnv32a(str, asString, seed) {
         data.forEach((str) => {
             let text = {
                 content: str,
-                id: hashFnv32a(str, true),
+                id: hash64(str, true),
                 title: str.split(" ").slice(0, 6).join(" ")
             }
             texts[text.id] = text
