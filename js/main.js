@@ -1,7 +1,37 @@
 "use strict";
 
+class Storage {
+    constructor() {
+        this.storage = window.localStorage
+    }
+    set(item, value) {
+        if (typeof value === "string") {
+            return this.storage.setItem(item, value)
+        } else {
+            return this.storage.setItem(item, JSON.stringify(value))
+        }
+
+    }
+    get(item) {
+        return this.storage.getItem(item)
+    }
+    remove(item) {
+        return this.storage.removeItem(item)
+    }
+    clear() {
+        return this.storage.clear()
+    }
+
+    isEmpty() {
+        return this.storage.length > 0
+    }
+}
+
+let storage = new Storage()
+
 let textInstance;
 let focused = true;
+
 const slicedClassTag = "char";
 const textsPath = '/assets/texts.json';
 const destination = document.querySelector("#textbox");
@@ -25,7 +55,7 @@ function hashFnv32a(str, asString, seed) {
         hval ^= str.charCodeAt(i);
         hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
     }
-    if( asString ){
+    if (asString) {
         // Convert to 8 digit hex string
         return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
     }
@@ -71,6 +101,11 @@ function hashFnv32a(str, asString, seed) {
         return arr[Math.floor(Math.random() * arr.length)]
     }
 
+    function randomFromObject(obj) {
+        let keys = Object.keys(obj)
+        return obj[keys[keys.length * Math.random() << 0]];
+    }
+
     // Slice DOM element into one character long span elements.
     function sliceString(text, classtag = "sliced") {
         let outputElement = document.createElement('DIV')
@@ -96,6 +131,10 @@ function hashFnv32a(str, asString, seed) {
         return textInstance.text.characters.reduce((accumulated, current) => current.failed ? accumulated + 1 : accumulated, 0)
     }
 
+    function calculateMissingCharacters(textInstance) {
+        return textInstance.text.characters.reduce((accumulated, current) => !current.typed ? accumulated + 1 : accumulated, 0)
+    }
+
     function getWPM(textInstance) {
         return parseInt((textInstance.characterindex) / 5 / ((Date.now() - textInstance.timing) * 0.0000166666));
     }
@@ -103,8 +142,11 @@ function hashFnv32a(str, asString, seed) {
     function getAccuracy(textInstance) {
         const missed = calculateMissedCharacters(textInstance)
         const characterindex = textInstance.maxcharacterindex
-        return parseInt((characterindex - missed) / characterindex * 100)
+        let accuracy = parseInt((characterindex - missed) / characterindex * 100)
+        accuracy < 0 ? accuracy = 0 : null
+        return accuracy
     }
+
 
     // Set WPM style/content changes
     function setVisualStats(textInstance, state = "ongoing") {
@@ -112,6 +154,7 @@ function hashFnv32a(str, asString, seed) {
         const wpmDisplay = document.querySelector("#wpmdisplay")
         const accuracyDisplay = document.querySelector("#accuracydisplay")
         const statsQuery = document.querySelector(".stats")
+        const missing = calculateMissingCharacters(textInstance)
         wpmDisplay.textContent = wpm;
 
         switch (state) {
@@ -121,12 +164,17 @@ function hashFnv32a(str, asString, seed) {
                 break;
             case "completed":
                 statsQuery.style.color = "white";
-                statsQuery.style.backgroundColor = "lightgreen";
+                statsQuery.style.backgroundColor = missing > 0 ? "#f5b645" : "lightgreen";
                 break;
         }
 
         wpmDisplay.textContent = wpm;
         accuracyDisplay.textContent = accuracy;
+    }
+
+    function pushInstanceToStorage(instance, storage) {
+        if (!instance.timing) return;
+        storage.set(instance.timing, instance)
     }
 
 
@@ -198,9 +246,20 @@ function hashFnv32a(str, asString, seed) {
 
     // Create text instances for game to run upon.
     function createTextInstance(text, custom = false) {
-        let textHash = hashFnv32a(text, true)
+        let content;
+        let textHash;
+        let title;
+        if (custom) {
+            content = text
+            textHash = hashFnv32a(text, true)
+            title = text.split(" ").slice(0, 6).join(" ")
+        } else {
+            content = text.content
+            textHash = text.id
+            title = text.title
+        }
         let words = [];
-        text.split(" ").forEach((w, i) => {
+        content.split(" ").forEach((w, i) => {
             words[i] = {
                 word: w,
                 length: w.length,
@@ -212,7 +271,7 @@ function hashFnv32a(str, asString, seed) {
         })
 
         let characters = [];
-        text.split("").forEach((c, i) => {
+        content.split("").forEach((c, i) => {
             if (c.match(/\ /)) {
                 characters.push({
                     character: "&nbsp;",
@@ -230,11 +289,12 @@ function hashFnv32a(str, asString, seed) {
 
         let textInstance = {
             text: {
-                content: text,
+                content: content,
                 words: words,
                 characters: characters,
                 customText: custom,
-                id: textHash
+                id: textHash,
+                title: title
             },
             keypresses: {
                 ok: 0,
@@ -255,8 +315,17 @@ function hashFnv32a(str, asString, seed) {
     }
 
     function resetTextInstance(textInstance) {
-        textInstance = createTextInstance(textInstance.text.content)
+        let id = textInstance.text.id;
+
+        if (textInstance.custom) {
+            textInstance = createTextInstance(textInstance.text.content, true)
+        } else {
+            let text = texts[id]
+            textInstance = createTextInstance(text)
+        }
+
         setTextInstance(textInstance)
+        return textInstance
     }
 
     function setTextInstance(textInstance) {
@@ -281,7 +350,8 @@ function hashFnv32a(str, asString, seed) {
     }
 
     function setRandomTextInstance(texts, textInstance) {
-        textInstance = createTextInstance(randomFromArray(texts), false)
+        let text = randomFromObject(texts)
+        textInstance = createTextInstance(text, false)
         setTextInstance(textInstance)
         return textInstance
     }
@@ -305,6 +375,12 @@ function hashFnv32a(str, asString, seed) {
 
     // Main listening function
     function typingListener(event, textInstance) {
+
+        // Prevent default behaviour for different browser features.
+        if ([13, 8, 222, 160, 32].indexOf(event.keyCode) > -1 && ["input", "textarea"].indexOf(event.target.nodeName.toLowerCase()) === -1) {
+            event.preventDefault();
+        }
+
         let key = event.key;
         let keycode = event.keyCode;
         let characterindex = textInstance.characterindex
@@ -363,16 +439,21 @@ function hashFnv32a(str, asString, seed) {
         }
 
         // Change index of the ongoing character
-        if (keycode === 8 || key === "Backspace") {
+        if (key === "Backspace") {
             characterindex > 0 ? textInstance.characterindex-- : null;
         } else {
             textInstance.characterindex++;
-
         }
 
         if (textInstance.characterindex >= textInstance.text.characters.length) {
             textInstance.completed = true;
             setVisualStats(textInstance, "completed")
+            let missing = calculateMissingCharacters(textInstance)
+            if (textInstance.stats.accuracy > 25 && textInstance.stats.wpm > 10 && !textInstance.custom && missing <= 1) {
+                pushInstanceToStorage(textInstance, storage)
+            } else if (missing > 1) {
+                alert("bruh u had shit missing, that does not count duude")
+            }
         }
 
         if (textInstance.characterindex > textInstance.maxcharacterindex) {
@@ -381,19 +462,36 @@ function hashFnv32a(str, asString, seed) {
 
     }
 
+    function initStorage(storage, texts) {
+        storage.set("texts", texts)
+    }
 
-    // Prevent default behaviour for different browser features.
+    function createTextsObject(data) {
+        let texts = {}
+        data.forEach((str) => {
+            let text = {
+                content: str,
+                id: hashFnv32a(str),
+                title: str.split(" ").slice(0, 6).join(" ")
+            }
+            texts[text.id] = text
+        })
+        return texts
+    }
+
+
+
     document.addEventListener("keypress", event => {
-        if ([13, 8, 222, 160].indexOf(event.keyCode) > -1 && ["input", "textarea"].indexOf(event.target.nodeName.toLowerCase()) === -1) {
-            event.preventDefault();
-        }
+
     });
 
 
 
-    const { texts } = await loadJSON(textsPath)
+    const textdata = await loadJSON(textsPath)
+    const texts = await createTextsObject(textdata.texts)
     textInstance = setRandomTextInstance(texts)
 
+    initStorage(storage, texts)
 
     // Detect keypresses and handle them in typing listener
     document.addEventListener("keydown", (event) => {
@@ -418,7 +516,7 @@ function hashFnv32a(str, asString, seed) {
 
     // Handle reset text "events"
     document.querySelector("#resettext").addEventListener('click', (event) => {
-        resetTextInstance(textInstance)
+        textInstance = resetTextInstance(textInstance)
     })
 
     // Handle random text "events"
@@ -426,4 +524,6 @@ function hashFnv32a(str, asString, seed) {
         textInstance = setRandomTextInstance(texts)
     })
 })();
+
+
 

@@ -1,16 +1,28 @@
 # typechase
 Typing speed tester / game build on vanilla javascript.
 
-Currently the old (still fully working) version found [here](https://arttu.pennanen.org/sub/typechase/)
+Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/sub/typechase/)
+
+## COMPLETED:
+* All old features now exist in this new version
+* Calculate accuracy
+* Save completed 'chases' to local storage.
+* Translated to english
+* Slightly less spaghetti than the old version
+* Chases where characters have been left missing count as unaccepted results
+
 
 ## TODO:
-* Save scores to local storage (show stats if getting better or worse)
-* ~~Fix restart, new text, and custom text buttons to work~~
-* ~~Give ux feedback on mistakes and on text completions~~ Might improve later.
+
+* Show stats if getting better or worse in text history
+* Text history
 * Renew design and/or ui
-* (Event based dom interaction ?)
-* ~~Make info box fade away after completing one text~~ Decided against it.
-* ~~Add custom id's to all texts~~ Every text has a 32 bit hash. What next?
-* Make instances where failed characters have been left unfixed to count as unaccepted results.
+* (Custom event based dom interaction ?)
+* ~~Save scores to local storage~~
+* ~~Fix restart, new text, and custom text buttons to work~~
+* ~~Give ux feedback on mistakes and on text completions~~ 
+* ~~Make info box fade away after completing one text~~ 
+* ~~Add custom id's to all texts~~
+* ~~Make instances where failed characters have been left unfixed to count as unaccepted results.~~
 * ~~Show accurary~~, and save it. (already counts the amount of missed presses)
 * ~~Translate to english~~ 

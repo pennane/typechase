@@ -47,6 +47,10 @@ a:hover {
     margin: 0 0.5em;
 }
 
+div#cancelcustomtext {
+    width: auto;
+}
+
 .small {
     font-size: 0.8em;
 }
