@@ -6,6 +6,33 @@ const slicedClassTag = "char";
 const textsPath = '/assets/texts.json';
 const destination = document.querySelector("#textbox");
 
+/**
+ * Calculate a 32 bit FNV-1a hash
+ * Found here: https://gist.github.com/vaiorabbit/5657561
+ * Ref.: http://isthe.com/chongo/tech/comp/fnv/
+ *
+ * @param {string} str the input value
+ * @param {boolean} [asString=false] set to true to return the hash value as 
+ *     8-digit hex string instead of an integer
+ * @param {integer} [seed] optionally pass the hash of the previous chunk
+ * @returns {integer | string}
+ */
+function hashFnv32a(str, asString, seed) {
+    var i, l,
+        hval = (seed === undefined) ? 0x811c9dc5 : seed;
+
+    for (i = 0, l = str.length; i < l; i++) {
+        hval ^= str.charCodeAt(i);
+        hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+    }
+    if( asString ){
+        // Convert to 8 digit hex string
+        return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
+    }
+    return hval >>> 0;
+}
+
+
 (async () => {
 
     // Mobile check
@@ -66,7 +93,7 @@ const destination = document.querySelector("#textbox");
     // Calculate current WPM based on text instance
 
     function calculateMissedCharacters(textInstance) {
-        return textInstance.text.characters.reduce((accumulated, current)=> current.failed ? accumulated + 1 : accumulated, 0)
+        return textInstance.text.characters.reduce((accumulated, current) => current.failed ? accumulated + 1 : accumulated, 0)
     }
 
     function getWPM(textInstance) {
@@ -76,12 +103,12 @@ const destination = document.querySelector("#textbox");
     function getAccuracy(textInstance) {
         const missed = calculateMissedCharacters(textInstance)
         const characterindex = textInstance.maxcharacterindex
-        return parseInt( (characterindex-missed) / characterindex * 100)
+        return parseInt((characterindex - missed) / characterindex * 100)
     }
 
     // Set WPM style/content changes
     function setVisualStats(textInstance, state = "ongoing") {
-        let { wpm= 0, accuracy = 100 } = textInstance.stats;
+        let { wpm = 0, accuracy = 100 } = textInstance.stats;
         const wpmDisplay = document.querySelector("#wpmdisplay")
         const accuracyDisplay = document.querySelector("#accuracydisplay")
         const statsQuery = document.querySelector(".stats")
@@ -171,6 +198,7 @@ const destination = document.querySelector("#textbox");
 
     // Create text instances for game to run upon.
     function createTextInstance(text, custom = false) {
+        let textHash = hashFnv32a(text, true)
         let words = [];
         text.split(" ").forEach((w, i) => {
             words[i] = {
@@ -205,7 +233,8 @@ const destination = document.querySelector("#textbox");
                 content: text,
                 words: words,
                 characters: characters,
-                customText: custom
+                customText: custom,
+                id: textHash
             },
             keypresses: {
                 ok: 0,
@@ -252,7 +281,7 @@ const destination = document.querySelector("#textbox");
     }
 
     function setRandomTextInstance(texts, textInstance) {
-        textInstance = createTextInstance(randomFromArray(texts))
+        textInstance = createTextInstance(randomFromArray(texts), false)
         setTextInstance(textInstance)
         return textInstance
     }
@@ -319,7 +348,7 @@ const destination = document.querySelector("#textbox");
             if (key !== "Backspace") {
                 keyToMatch.failed = true;
             }
-            
+
 
             textInstance.keypresses.fail++;
         }
@@ -338,7 +367,7 @@ const destination = document.querySelector("#textbox");
             characterindex > 0 ? textInstance.characterindex-- : null;
         } else {
             textInstance.characterindex++;
-            
+
         }
 
         if (textInstance.characterindex >= textInstance.text.characters.length) {
@@ -346,7 +375,7 @@ const destination = document.querySelector("#textbox");
             setVisualStats(textInstance, "completed")
         }
 
-        if (textInstance.characterindex > textInstance.maxcharacterindex ) {
+        if (textInstance.characterindex > textInstance.maxcharacterindex) {
             textInstance.maxcharacterindex = textInstance.characterindex
         }
 
@@ -396,6 +425,5 @@ const destination = document.querySelector("#textbox");
     document.querySelector("#randomtext").addEventListener('click', (event) => {
         textInstance = setRandomTextInstance(texts)
     })
-
 })();
 

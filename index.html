@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style/main.css">
-    <script src="https://use.fontawesome.com/b346d88d65.js"></script>
-    
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126133790-1"></script>
         <script>
             function gtag() {
@@ -29,6 +27,8 @@
 
     <meta content="typechase" name="twitter:title">
     <meta content="A typing game where you can learn to type and use your own texts while doing so." name="twitter:description">
+
+    <script src="https://kit.fontawesome.com/e6f52b2702.js"></script>
    
     <title>Typechase</title>
 </head>
@@ -37,14 +37,18 @@
     <main>
         <div id="typechase">
             <div id="text">
-               <div id="help"><span>Kirjoita laatikon teksti, ja saa selville kirjoitusnopeutesi </span> <a href="https://en.wikipedia.org/wiki/Words_per_minute" target="_blank">WPM</a><span class="small"> (sanat minuutissa)</span> </div>
+               <div id="help">
+                    <span>Write the seen text, and find out your typing speed </span>
+                    <a href="https://en.wikipedia.org/wiki/Words_per_minute" target="_blank">WPM</a>
+                    <span class="small"> (words per minute)</span> </div>
                 <div class="customize">
-                    <div class="button" id="randomtext">Satunnainen</div>
-                    <div class="button" id="customtext">Oma teksti</div>
-                    <div class="button" id="resettext"><i class="fa fa-undo" aria-hidden="true"></i></div>
+                    <button class="button" id="showhistory" title="history"><i class="fas fa-history"></i></button>
+                    <button class="button" id="randomtext" title="random"><i class="fas fa-random"></i></button>
+                    <button class="button" id="customtext" title="custom"><i class="fas fa-file-alt"></i></button>
+                    <button class="button" id="resettext" title="reset"><i class="fas fa-undo"></i></button>
                 </div>
                 <div id="boxparent">
-                    <span id="textbox">Hey guys i am to be sliced up</span>
+                    <span id="textbox"></span>
                 </div>
                 <div class="stats">
                     <div>
@@ -59,11 +63,12 @@
                 </div>
             </div>
             <div id="unfocus"></div>
+            <div id="texthistory"></div>
             <div id="input-text">
-                <span> Kirjoita / Copy paste</span>
+                <span> Write / Copy paste</span>
                 <input id="texttoload" type="text">
                 <div class="input-settings">
-                    <div class="button" id="cancelcustomtext">Kumoa</div>
+                    <div class="button" id="cancelcustomtext">Cancel</div>
                     <div class="button" id="engagecustomtext">Ok</div>
                 </div>
             </div>
