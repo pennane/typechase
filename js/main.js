@@ -332,6 +332,7 @@ function hashFnv32a(str, asString, seed) {
             custom: full.custom,
             timing: full.timing
         }
+        return trimmedInstance;
     }
 
     function resetTextInstance(textInstance) {
