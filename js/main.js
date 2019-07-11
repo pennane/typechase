@@ -1,5 +1,3 @@
-"use strict";
-
 class Storage {
     constructor() {
         this.storage = window.localStorage
@@ -27,13 +25,11 @@ class Storage {
     }
 }
 
-let storage = new Storage()
+
 
 let textInstance;
-let focused = true;
-
 const slicedClassTag = "char";
-const textsPath = '/assets/texts.json';
+const textsPath = window.location.host === "https://arttu.pennanen.org" ? "https://arttu.pennanen.org/sub/typechase/assets/texts.json" : "./assets/texts.json";
 const destination = document.querySelector("#textbox");
 
 /**
@@ -64,7 +60,11 @@ function hashFnv32a(str, asString, seed) {
 
 
 (async () => {
-
+    "use strict";
+    
+    let storage = new Storage()
+    let focused = true;
+    
     // Mobile check
     window.addEventListener("load", () => {
         window.mobilecheck = function () {
@@ -84,7 +84,7 @@ function hashFnv32a(str, asString, seed) {
         let req = new XMLHttpRequest();
         return new Promise((resolve, reject) => {
             req.overrideMimeType("application/json");
-            req.open('GET', path, true);
+            req.open("GET", path, true);
             req.onreadystatechange = () => {
                 if (req.readyState == 4 && req.status == "200") {
                     let response = JSON.parse(req.responseText);
@@ -108,11 +108,11 @@ function hashFnv32a(str, asString, seed) {
 
     // Slice DOM element into one character long span elements.
     function sliceString(text, classtag = "sliced") {
-        let outputElement = document.createElement('DIV')
+        let outputElement = document.createElement("DIV")
         outputElement.setAttribute("class", "slicedString")
 
         for (let i = 0; i < text.length; i++) {
-            let char = document.createElement('span');
+            let char = document.createElement("span");
             char.setAttribute("class", `slicedChar ${classtag}${i}`)
             char.innerText = text.charAt(i);
             outputElement.appendChild(char)
@@ -174,7 +174,8 @@ function hashFnv32a(str, asString, seed) {
 
     function pushInstanceToStorage(instance, storage) {
         if (!instance.timing) return;
-        storage.set(instance.timing, instance)
+        let trimmedInstance = createTrimmedTextInstance(instance)
+        storage.set(instance.timing, trimmedInstance)
     }
 
 
@@ -243,6 +244,8 @@ function hashFnv32a(str, asString, seed) {
             return false;
         }
     }
+    
+    
 
     // Create text instances for game to run upon.
     function createTextInstance(text, custom = false) {
@@ -292,7 +295,6 @@ function hashFnv32a(str, asString, seed) {
                 content: content,
                 words: words,
                 characters: characters,
-                customText: custom,
                 id: textHash,
                 title: title
             },
@@ -304,6 +306,7 @@ function hashFnv32a(str, asString, seed) {
                 wpm: undefined,
                 accuracy: undefined
             },
+            custom: custom,
             completed: false,
             focused: true,
             loaded: false,
@@ -312,6 +315,23 @@ function hashFnv32a(str, asString, seed) {
             timing: null
         }
         return textInstance
+    }
+    
+    function createTrimmedTextInstance(textInstance) {
+        let full = textInstance
+        let trimmedInstance = {
+            text: {
+                content: full.text.content,
+                id: full.text.id,
+                title: full.text.title
+            },
+            stats: {
+                wpm: full.stats.wpm,
+                accuracy: full.stats.accuracy
+            },
+            custom: full.custom,
+            timing: full.timing
+        }
     }
 
     function resetTextInstance(textInstance) {
@@ -337,7 +357,8 @@ function hashFnv32a(str, asString, seed) {
     // Create a text instance from a custon text
     function setCustomTextInstance(customText, textInstance) {
         customText = customText.trim()
-        // If the custom text is faulty
+
+        // Return if the custom text is faulty
         if (!customText || customText.length < 1) {
             return;
         }
@@ -360,17 +381,21 @@ function hashFnv32a(str, asString, seed) {
     function openCustomTextMenu(state, textInstance) {
         const textmenu = document.getElementById("input-text")
 
+        // Open
         if (state === true) {
             changeFocusState(true, textInstance)
 
             textmenu.style.zIndex = 2;
             textmenu.style.opacity = 100;
+
+        // Close
         } else if (state === false) {
             changeFocusState(false, textInstance)
 
             textmenu.style.zIndex = -1;
             textmenu.style.opacity = 0;
         }
+
     }
 
     // Main listening function
@@ -462,10 +487,6 @@ function hashFnv32a(str, asString, seed) {
 
     }
 
-    function initStorage(storage, texts) {
-        storage.set("texts", texts)
-    }
-
     function createTextsObject(data) {
         let texts = {}
         data.forEach((str) => {
@@ -479,13 +500,9 @@ function hashFnv32a(str, asString, seed) {
         return texts
     }
 
-
-
-    document.addEventListener("keypress", event => {
-
-    });
-
-
+    function initStorage(storage, texts) {  
+        storage.set("texts", texts)
+    }
 
     const textdata = await loadJSON(textsPath)
     const texts = await createTextsObject(textdata.texts)
@@ -499,31 +516,29 @@ function hashFnv32a(str, asString, seed) {
     })
 
     // Handle open custom text "events"
-    document.querySelector("#customtext").addEventListener('click', (event) => {
+    document.querySelector("#customtext").addEventListener("click", (event) => {
         openCustomTextMenu(true, textInstance)
     })
 
     // Handle custom text cancel "events"
-    document.querySelector("#cancelcustomtext").addEventListener('click', (event) => {
+    document.querySelector("#cancelcustomtext").addEventListener("click", (event) => {
         openCustomTextMenu(false, textInstance)
     })
 
     // Handle custom text ok "events"
-    document.querySelector("#engagecustomtext").addEventListener('click', (event) => {
+    document.querySelector("#engagecustomtext").addEventListener("click", (event) => {
         let customText = document.getElementById("texttoload").value;
         textInstance = setCustomTextInstance(customText, textInstance)
     })
 
     // Handle reset text "events"
-    document.querySelector("#resettext").addEventListener('click', (event) => {
+    document.querySelector("#resettext").addEventListener("click", (event) => {
         textInstance = resetTextInstance(textInstance)
     })
 
     // Handle random text "events"
-    document.querySelector("#randomtext").addEventListener('click', (event) => {
+    document.querySelector("#randomtext").addEventListener("click", (event) => {
         textInstance = setRandomTextInstance(texts)
     })
+
 })();
-
-
-
