@@ -187,7 +187,7 @@ function hashFnv32a(str, asString, seed) {
         }
 
         // Check if key is valid
-        let valid = (keycode === 8) || (keycode > 47 && keycode < 58) || (keycode === 32) || (keycode === 13) || (keycode > 64 && keycode < 91) || (keycode > 95 && keycode < 112) || (keycode > 185 && keycode < 193) || (keycode > 218 && keycode < 223);
+        let valid = (keycode === 8) || (keycode > 47 && keycode < 58) || (keycode === 32) || (keycode > 64 && keycode < 91) || (keycode > 95 && keycode < 112) || (keycode > 185 && keycode < 193) || (keycode > 218 && keycode < 223);
 
         if (valid) {
             return true;
@@ -384,7 +384,7 @@ function hashFnv32a(str, asString, seed) {
 
     // Prevent default behaviour for different browser features.
     document.addEventListener("keypress", event => {
-        if ([8, 222, 160].indexOf(event.keyCode) > -1 && ["input", "textarea"].indexOf(event.target.nodeName.toLowerCase()) === -1) {
+        if ([13, 8, 222, 160].indexOf(event.keyCode) > -1 && ["input", "textarea"].indexOf(event.target.nodeName.toLowerCase()) === -1) {
             event.preventDefault();
         }
     });
