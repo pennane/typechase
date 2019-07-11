@@ -14,6 +14,7 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 
 ## TODO:
 
+* Ensure other browser support
 * Show stats if getting better or worse in text history
 * Text history
 * Renew design and/or ui
