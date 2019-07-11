@@ -642,7 +642,9 @@ function hashFnv32a(str, asString, seed) {
 
 
     function loadHistoryToDOM(history, destination) {
-        console.log(history[0].timing)
+        if (history.length === 0) {
+            return;
+        }
         let sortedHistory = history.sort((a, b) => (a.timing > b.timing) ? 1 : -1)
         console.log(sortedHistory[0].timing)
         sortedHistory.forEach((chase) => {
