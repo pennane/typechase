@@ -169,7 +169,7 @@ function hashFnv32a(str, asString, seed) {
                 break;
             case "completed":
                 statsQuery.style.color = "white";
-                statsQuery.style.backgroundColor = missing > 0 ? "#f5b645" : "#6ae66c";
+                statsQuery.style.backgroundColor = missing > 0 ? "#f5b645" : "#4dda4f";
                 break;
         }
 
@@ -189,11 +189,11 @@ function hashFnv32a(str, asString, seed) {
         switch (state) {
             case "incorrect":
                 element.style.color = "black"
-                element.style.backgroundColor = "#f5dddd"
+                element.style.backgroundColor = "#fbd2d2"
                 break;
             case "correct":
-                element.style.color = key.failed ? "#7faf23" : "#25b72b"
-                element.style.backgroundColor = key.failed ? "#f7edd9" : "#f3f3f3"
+                element.style.color = key.failed ? "#7eaf21" : "#25b72b"
+                element.style.backgroundColor = key.failed ? "#fff0d3" : "#f3f3f3"
                 break;
             case "default":
                 element.style.color = "inherit"
@@ -209,13 +209,11 @@ function hashFnv32a(str, asString, seed) {
         if (focus == true) {
             focused = true;
             textInstance.focused = false;
-            unfocusElement.style.zIndex = 2;
-            unfocusElement.style.opacity = 100;
+            showElement(unfocusElement, 2)
         } else if (focus == false) {
             focused = false
             textInstance.focused = true;
-            unfocusElement.style.zIndex = -1;
-            unfocusElement.style.opacity = 0;
+            hideElement(unfocusElement, -1)
         }
     }
 
@@ -259,7 +257,7 @@ function hashFnv32a(str, asString, seed) {
         let title;
         if (custom) {
             content = text
-            textHash = hashFnv32a(text, false)
+            textHash = hashFnv32a(text, true)
             title = text.split(" ").slice(0, 6).join(" ")
         } else {
             content = text.content
@@ -387,21 +385,33 @@ function hashFnv32a(str, asString, seed) {
 
     // Opens and closes custom text menu
     function openCustomTextMenu(state, textInstance) {
-        const textmenu = document.getElementById("input-text")
+        const element = document.getElementById("input-text")
 
         // Open
         if (state === true) {
             changeFocusState(true, textInstance)
+            showElement(element, 3, "flex")
 
-            textmenu.style.zIndex = 3;
-            textmenu.style.opacity = 100;
-
-            // Close
+        // Close
         } else if (state === false) {
             changeFocusState(false, textInstance)
+            hideElement(element, -1)
+        }
 
-            textmenu.style.zIndex = -1;
-            textmenu.style.opacity = 0;
+    }
+
+    function openHistory(state, textInstance) {
+        const element = document.getElementById("chasehistory")
+
+        // Open
+        if (state === true) {
+            changeFocusState(true, textInstance)
+            showElement(element, 3, "flex")
+
+        // Close
+        } else if (state === false) {
+            changeFocusState(false, textInstance)
+            hideElement(element, -1)
         }
 
     }
@@ -485,7 +495,7 @@ function hashFnv32a(str, asString, seed) {
             textInstance.completed = true;
             setVisualStats(textInstance, "completed")
             let missing = calculateMissingCharacters(textInstance)
-            if (textInstance.stats.accuracy > 25 && textInstance.stats.wpm > 10 && !textInstance.custom && missing <= 1) {
+            if (textInstance.stats.accuracy > 25 && textInstance.stats.wpm > 10 && missing <= 1) {
                 pushInstanceToStorage(textInstance, storage)
                 loadChaseToDOM(textInstance, document.getElementById("chaselist"))
             } else if (missing > 1) {
@@ -557,6 +567,7 @@ function hashFnv32a(str, asString, seed) {
 
         let main = document.createElement('div')
         main.setAttribute('class', 'chase')
+        main.setAttribute('title', 'Click to copy full text')
         let head = document.createElement('div')
         head.setAttribute('class', 'chaseHead')
         let body = document.createElement('div')
@@ -626,6 +637,16 @@ function hashFnv32a(str, asString, seed) {
         return main;
     }
 
+    function hideElement(element, zIndex = -1) {
+        element.style.display = "none"
+        element.style.zIndex = zIndex
+    }
+
+    function showElement(element, zIndex = 2, display = "block") {
+        element.style.display =  display
+        element.style.zIndex = zIndex
+    }
+
     function getTextHistory(storage) {
         let history = []
         storage.keys().forEach(key => {
@@ -653,13 +674,53 @@ function hashFnv32a(str, asString, seed) {
         })
     }
 
+    function popup(text = "", color = "", delay = 2000) {
+        let destination = document.getElementById("popuptext")
+        let popupbox = document.querySelector(".popupbox")
+
+        destination.textContent = text;
+        popupbox.style.backgroundColor = color;
+
+        if ([...popupbox.classList].indexOf("hidden") === -1) return;
+
+        popupbox.classList.remove("closed", "hidden")
+
+        setTimeout(() => {
+            popupbox.classList.add("hidden")
+        }, delay)
+
+        setTimeout(() => {
+            // if not hidden, return. (fixes spam clicking visual glitches)
+            if ([...popupbox.classList].indexOf("hidden") === -1) return;
+            popupbox.classList.add("closed")
+        }, delay + 1100)
+    }
+
+    function chaseElementClick(event) {
+        function findChaseObj(el) {
+            if (el.className === "chase") {
+                return el;
+            } else {
+                return el.parentNode ? findChaseObj(el.parentNode) : false 
+            }
+        }
+        let chase = findChaseObj(event.target)
+        if (chase) {
+            navigator.clipboard.writeText(chase.querySelector(".chaseFullText").textContent).catch(console.log)
+            popup("Full text copied to clipboard", "#3283ca", 1750)
+        }
+        
+    }
+
     const textdata = await loadJSON(textsPath)
     const texts = await createTextsObject(textdata.texts)
-    textInstance = setRandomTextInstance(texts)
-
     const history = getTextHistory(storage);
 
+    textInstance = setRandomTextInstance(texts)
     loadHistoryToDOM(history, document.getElementById("chaselist"))
+
+    // Add eventlistener to chase objects
+    document.addEventListener("click", chaseElementClick)
 
     // Detect keypresses and handle them in typing listener
     document.addEventListener("keydown", (event) => {
@@ -674,6 +735,16 @@ function hashFnv32a(str, asString, seed) {
     // Handle custom text cancel "events"
     document.querySelector("#cancelcustomtext").addEventListener("click", (event) => {
         openCustomTextMenu(false, textInstance)
+    })
+
+    // Handle open history"events"
+    document.querySelector("#showhistory").addEventListener("click", (event) => {
+        openHistory(true, textInstance)
+    })
+
+    // Handle close history "events"
+    document.querySelector("#closehistory").addEventListener("click", (event) => {
+        openHistory(false, textInstance)
     })
 
     // Handle custom text ok "events"
@@ -691,5 +762,7 @@ function hashFnv32a(str, asString, seed) {
     document.querySelector("#randomtext").addEventListener("click", (event) => {
         textInstance = setRandomTextInstance(texts)
     })
+
+
 
 })();

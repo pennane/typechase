@@ -36,13 +36,10 @@
     <main>
         <div id="typechase">
             <h1 class="mainheader">Typechase</h1>
-            <div id="text">
-                <div id="help">
-                    <span>Write the seen text, and find out your typing speed </span>
-                    <a href="https://en.wikipedia.org/wiki/Words_per_minute" target="_blank">WPM</a>
-                    <span class="small"> (words per minute)</span> </div>
+            <div id="app">
+                
                 <div class="customize">
-                    <!--<button class="button" id="showhistory" title="history"><i class="fas fa-history"></i></button>-->
+                    <button class="button" id="showhistory" title="history"><i class="fas fa-history"></i></button>
                     <button class="button" id="randomtext" title="random"><i class="fas fa-random"></i></button>
                     <button class="button" id="customtext" title="custom"><i class="fas fa-file-alt"></i></button>
                     <button class="button" id="resettext" title="reset"><i class="fas fa-undo"></i></button>
@@ -62,21 +59,37 @@
 
                 </div>
             </div>
-
-            <div id="chasehistory">
-                <h2>Chasing history</h2>
-                <div id="chaselist">
+            <div id="help">
+                    <span>Write the seen text, and find out your typing speed </span>
+                    <a href="https://en.wikipedia.org/wiki/Words_per_minute" target="_blank">WPM</a>
+                    <span class="small"> (words per minute)</span> 
                 </div>
+            <div id="chasehistory">
+                <div id="historywrap">
+                        <div class="historyhead">
+                                <h2>Chasing history</h2>
+                                <button class="button" id="closehistory" title="history"><i class="fas fa-times"></i></button>
+                        </div>
+                        
+                        <div id="chaselist">
+                        </div>
+                </div>
+                
             </div>
             <div id="input-text">
-                <span> Write / Copy paste</span>
-                <input id="texttoload" type="text">
+                <div>
+                        <span> Write / Copy paste</span>
+                        <input id="texttoload" type="text">
+                </div>
                 <div class="input-settings">
                     <div class="button" id="cancelcustomtext">Cancel</div>
                     <div class="button" id="engagecustomtext">Ok</div>
                 </div>
             </div>
             <div id="unfocus"></div>
+            <div class="popupbox closed hidden">
+                <span id="popuptext"></span>
+            </div>
         </div>
     </main>
     <script src="js/main.js" type="text/javascript"></script>

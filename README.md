@@ -12,14 +12,18 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 * Chases where characters have been left missing count as unaccepted results
 * Added skill levels
 * Newer design!
+* Other!
 
 ## TODO:
 
+* Add a cursor on the current character
+* Show fastest time for current text
+* Show stuff about the current text (length, difficulty?, times typed)
 * Ensure other browser support
 * Show stats if getting better or worse in text history
 * Calculate average wpm and accuracy
-* Make history be a separate popup window
 * (Custom event based dom interaction ?)
+* ~~Make history be a separate popup window~~
 * ~~Text history~~
 * ~~Renew design and/or ui~~
 * ~~Save scores to local storage~~
