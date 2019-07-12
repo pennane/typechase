@@ -16,6 +16,7 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 
 ## TODO:
 
+* Have a delete button on history elements. (maybe just visual ?)
 * Fix spaces at the end of line.
 * Add a cursor on the current character
 * Show fastest time for current text
