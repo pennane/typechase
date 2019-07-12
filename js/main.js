@@ -34,8 +34,14 @@ class Storage {
 
 let textInstance;
 const slicedClassTag = "char";
-const textsPath = window.location.host === "https://arttu.pennanen.org" ? "https://arttu.pennanen.org/sub/typechase/assets/texts.json" : "./assets/texts.json";
+const textsPath = 
+    window.location.host === "https://arttu.pennanen.org" 
+    ? "https://arttu.pennanen.org/sub/typechase/assets/texts.json" 
+    : "./assets/texts.json";
+
 const destination = document.querySelector("#textbox");
+
+
 
 /**
  * Calculate a 32 bit FNV-1a hash
@@ -123,8 +129,9 @@ function hash64(str, asString) {
 
         for (let i = 0; i < text.length; i++) {
             let char = document.createElement("span");
-            char.setAttribute("class", `slicedChar ${classtag}${i}`)
-            char.innerText = text.charAt(i);
+            let charAtIndex = text.charAt(i);
+            char.setAttribute("class", `slicedChar ${classtag}${i} ${charAtIndex.match(/\ /) ? 'slicedSpace' : null}`)
+            char.innerText = charAtIndex
             outputElement.appendChild(char)
         }
 
@@ -188,6 +195,26 @@ function hash64(str, asString) {
         storage.set(`chase_${instance.timing}`, trimmedInstance)
     }
 
+    function removeInstanceFromStorage(tag, storage) {
+        let instance = storage.get(tag)
+        if (!instance) return;
+        storage.remove(tag);
+    }
+
+    function removeChase(tag, storage) {
+        let instance = storage.get(tag)
+        let element = document.getElementById(tag)
+
+        if (!instance && !element) return
+
+        if (instance) {
+            removeInstanceFromStorage(tag, storage)
+        }
+        
+        if (element) {
+            removeElement(element)
+        }
+    }
 
     // For character style changing
     function setVisualCharacter(element, state, key) {
@@ -385,6 +412,7 @@ function hash64(str, asString) {
         let text = randomFromObject(texts)
         textInstance = createTextInstance(text, false)
         setTextInstance(textInstance)
+        updateCursor(0)
         return textInstance
     }
 
@@ -452,6 +480,8 @@ function hash64(str, asString) {
         // Variable to contain wether typed key was correct etc.
         let keyState;
 
+       
+
         if (key === keyToMatch.character) {
             keyState = "correct";
 
@@ -511,7 +541,7 @@ function hash64(str, asString) {
         if (textInstance.characterindex > textInstance.maxcharacterindex) {
             textInstance.maxcharacterindex = textInstance.characterindex
         }
-
+        updateCursor(textInstance.characterindex)
     }
 
     function getSkillLevel(wpm) {
@@ -566,11 +596,15 @@ function hash64(str, asString) {
         return texts
     }
 
-    function createChaseElement(trimmedInstance) {
+    function removeElement(element) {
+        element.outerHTML = "";
+    }
 
+    function createChaseElement(trimmedInstance) {
         let {hours, minutes, seconds, year, month, day} = sliceTime(trimmedInstance.timing)
 
         let main = document.createElement('div')
+        main.setAttribute('id', `chase_${trimmedInstance.timing}`)
         main.setAttribute('class', 'chase')
         main.setAttribute('title', 'Click to copy full text')
         let head = document.createElement('div')
@@ -579,6 +613,18 @@ function hash64(str, asString) {
         body.setAttribute('class', 'chaseBody skillLevel_'+(trimmedInstance.stats.skillLevel | getSkillLevel(trimmedInstance.stats.wpm)))
         let footer = document.createElement('div')
         footer.setAttribute('class', 'chaseFooter')
+
+        let headLeft = document.createElement('div')
+        headLeft.setAttribute('class', 'chaseHeadLeft')
+        let headRight = document.createElement('div')
+        headRight.setAttribute('class', 'chaseHeadRight')
+
+        let escape = document.createElement('button')
+        escape.setAttribute('class', 'button removeChaseButton')
+        escape.setAttribute('title', 'remove from history and stats')
+        let escapeIcon = document.createElement('i')
+        escapeIcon.setAttribute('class', 'fas fa-times')
+        escapeIcon.setAttribute('aria-hidden', 'true')
 
         let title = document.createElement('span')
         title.setAttribute('class', 'chaseTitle')
@@ -605,7 +651,7 @@ function hash64(str, asString) {
         let ddmmyy = document.createElement('span')
         ddmmyy.setAttribute('class', "chaseddmmyy")
 
-
+        
 
         title.textContent = trimmedInstance.text.title
         id.textContent = trimmedInstance.text.id
@@ -620,6 +666,8 @@ function hash64(str, asString) {
         hhmmss.textContent = `${hours}:${minutes}:${seconds}`
         ddmmyy.textContent = `${day}.${month}.${year}`
 
+        escape.appendChild(escapeIcon)
+
         time.appendChild(ddmmyy)
         time.appendChild(hhmmss)
 
@@ -628,8 +676,13 @@ function hash64(str, asString) {
         accwrapper.appendChild(acc)
         accwrapper.appendChild(acctext)
 
-        head.appendChild(title)
-        head.appendChild(id)
+        headLeft.appendChild(title)
+        headLeft.appendChild(escape)
+
+        headRight.appendChild(id)
+
+        head.appendChild(headLeft)
+        head.appendChild(headRight)
         body.appendChild(wpmwrapper)
         body.appendChild(accwrapper)
         footer.appendChild(time)
@@ -640,6 +693,17 @@ function hash64(str, asString) {
         main.appendChild(fulltext)
 
         return main;
+    }
+
+    function updateCursor(characterindex) {
+
+        let query = `.${slicedClassTag}${characterindex}`
+        let cursor = document.querySelector(query);
+        if (!cursor) return;
+        [...document.querySelectorAll(".currentChar")].forEach(element => {
+            element.classList.remove('currentChar')
+        })
+        cursor.classList.add('currentChar')
     }
 
     function hideElement(element, zIndex = -1) {
@@ -700,7 +764,13 @@ function hash64(str, asString) {
         }, delay + 1100)
     }
 
-    function chaseElementClick(event) {
+    function chaseElementClick(event, storage) {
+
+        let targetClasslist = [...event.target.classList];
+        let parentClasslist = [...event.target.parentNode.classList]
+        
+        
+
         function findChaseObj(el) {
             if (el.className === "chase") {
                 return el;
@@ -709,10 +779,13 @@ function hash64(str, asString) {
             }
         }
         let chase = findChaseObj(event.target)
-        if (chase) {
+        if (!chase) return;
+
             navigator.clipboard.writeText(chase.querySelector(".chaseFullText").textContent).catch(console.log)
             popup("Full text copied to clipboard", "#3283ca", 1750)
-        }
+            if (targetClasslist.indexOf('removeChaseButton') > -1 || parentClasslist.indexOf('removeChaseButton') > -1) {
+                removeChase(chase.getAttribute('id'), storage)
+            }
         
     }
 
@@ -724,7 +797,9 @@ function hash64(str, asString) {
     loadHistoryToDOM(history, document.getElementById("chaselist"))
 
     // Add eventlistener to chase objects
-    document.addEventListener("click", chaseElementClick)
+    document.addEventListener("click", (event) => {
+        chaseElementClick(event, storage)
+    })
 
     // Detect keypresses and handle them in typing listener
     document.addEventListener("keydown", (event) => {

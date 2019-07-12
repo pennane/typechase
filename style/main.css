@@ -1,18 +1,20 @@
 @import url('https://rsms.me/inter/inter.css');
-html { 
+
+html {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     height: 100%;
     width: 100%;
- }
+}
 
- body {
-     margin: 0;
-     width: 100%;
-     height: 100%;
- }
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
 
-h1, h2 {
+h1,
+h2 {
     font-weight: 500;
     text-transform: lowercase;
 }
@@ -64,6 +66,7 @@ a:hover {
     align-items: center;
     transition: all 0.05s;
     margin: 0 0.5em;
+    box-sizing: border-box;
 }
 
 div#cancelcustomtext {
@@ -117,15 +120,22 @@ div#cancelcustomtext {
     align-items: center;
 }
 
+.input-settings > .button {
+    padding: 0.3em;
+    margin: 0.3em;
+    box-sizing: content-box;
+}
+
 #input-text {
     z-index: -1;
     position: absolute;
     background-color: white;
     height: calc(70px + 0.4vw);
-    border: 1px solid black;
+    border: 1px solid #848484;
     display: flex;
     flex-direction: column;
-    padding: 1em;
+    padding: 0.5em 1em;
+    padding-bottom: 0;
     justify-content: space-around;
     display: none;
     margin-top: 20vh
@@ -205,7 +215,7 @@ span.stats {
     max-width: 900px;
 }
 
-#chasehistory{ 
+#chasehistory {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -231,10 +241,6 @@ span.stats {
     margin-left: 0.3em;
 }
 
-.historyhead.button{
-
-}
-
 .chase {
     border: 1px solid #b9b9b9;
     flex: 33%;
@@ -245,27 +251,62 @@ span.stats {
     justify-content: space-between;
     max-width: 33%;
     min-height: 130px;
+    border-top: 0;
     cursor: pointer;
+}
+
+.chase:only-child {
+    flex: 1;
+    max-width: none;
+}
+
+.chase:nth-child(-n+3) {
+    border-top: 1px solid #b9b9b9;
+}
+
+.chase:nth-child(3n-1) {
+    border-left: none;
+    border-right: none;
+}
+
+.chase:last-child {
+    border-right: 1px solid #b9b9b9;
 }
 
 .chaseHead {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     padding: 0.3em 0.8em;
+    padding-right: 0.3em;
     flex: 100%;
 }
+
+.chaseHeadLeft {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.chaseHeadRight {}
+
+.chaseHeadLeft>.button {
+    margin: 0;
+}
+
 
 .chaseTitle {
     font-weight: 450;
     margin-right: 1em;
     margin-bottom: 0.3em;
+    flex: 1;
 }
 
 .chaseId {
     color: rgb(70, 70, 70);
     background-color: rgb(247, 247, 247);
     padding: 0.3em 0.4em;
-    margin: 0.3em;  
+    margin: 0.3em;
     font-size: 0.68em;
     margin-left: 0.7em;
     display: flex;
@@ -337,6 +378,32 @@ span.stats {
     color: white;
 }
 
+.slicedChar {
+    position: relative;
+}
+
+.slicedSpace.currentChar {
+    display: inline-block;
+    width: 5.19px;
+}
+
+.currentChar::after {
+content: '';
+position: absolute;
+width: 0.5em;
+    height: 1.7px;
+bottom: 0;
+left: 0;
+margin: auto;
+background-color: #0087ca;
+
+animation: blinkingCursor 1.3s linear infinite;
+}
+
+.slicedSpace.currentChar::after {
+    bottom: -4px;
+}
+
 .popupbox {
     transition: transform 0.5s, opacity 0.9s, background-color 0.9s;
     transform: translateY(0);
@@ -360,25 +427,52 @@ span.stats {
     opacity: 0;
 }
 
-@media screen and (max-width: 750px) {
-    .chaseHead {
-        flex-direction: column;
-    }
-    .chaseTitle {
-        margin-right: inherit;
-    }
-    .chaseId {
-        margin-right: inherit;
-    }
-}
+@media screen and (max-width: 750px) {}
 
 @media screen and (max-width: 550px) {
-    
+
     .chase {
         flex: 49%;
         max-width: 49%;
     }
+
     html {
         font-size: calc(0.8em + 0.4vw);
+    }
+
+    .chase:nth-child(3n-1) {
+        border-left: inherit;
+        border-right: inherit;
+    }
+
+    .chase:nth-child(even) {
+        border-left: none;
+        border-right: 1px solid #b9b9b9;
+    }
+
+    .chase:nth-child(-n+3) {
+        border-top: inherit;
+    }
+
+    .chase:nth-child(-n+2) {
+        border-top: 1px solid #b9b9b9;
+    }
+}
+
+@keyframes blinkingCursor {
+    0% {
+        visibility: initial;
+    }
+    49%{
+        visibility: initial;
+    }
+    50% {
+        visibility: hidden;
+    }
+    99% {
+        visibility: hidden;
+    }
+    100% {
+        visibility: initial;
     }
 }

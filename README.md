@@ -5,26 +5,25 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 
 ## COMPLETED:
 * All old features now exist in this new version
-* Calculate accuracy
-* Save completed 'chases' to local storage and load them to dom.
+* Calculates stats and skill level
+* Saves completed runs to history and dom
 * Translated to english
 * Slightly less spaghetti than the old version
-* Chases where characters have been left missing count as unaccepted results
-* Added skill levels
 * Newer design!
 * Other!
 
 ## TODO:
 
-* Have a delete button on history elements. (maybe just visual ?)
-* Fix spaces at the end of line.
-* Add a cursor on the current character
+
 * Show fastest time for current text
 * Show stuff about the current text (length, difficulty?, times typed)
 * Ensure other browser support
 * Show stats if getting better or worse in text history
 * Calculate average wpm and accuracy
 * (Custom event based dom interaction ?)
+* ~~Fix spaces at textbox line ends~~
+* ~~Add a cursor on the current character~~
+* ~~Have a delete button on history elements. (maybe just visual ?) ~~
 * ~~Make history be a separate popup window~~
 * ~~Text history~~
 * ~~Renew design and/or ui~~
