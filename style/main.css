@@ -207,12 +207,31 @@ span.stats {
     font-size: 1.6em;
 }
 
+#averagestats {
+    opacity: 0.9;
+    margin-top: 0.7em;
+    max-width: 75vw;
+    visibility: hidden;
+}
+
+#last10WpmParent {
+    padding: 0.15em 0.29em;
+    padding-bottom: 0.19em;
+    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.48em;
+}
+
 
 #chaselist {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     max-width: 900px;
+    margin-bottom: 3em;
+    box-sizing: border-box;
 }
 
 #chasehistory {
@@ -321,6 +340,33 @@ span.stats {
     padding: 0.3em 0.8em;
 }
 
+.chaseFooter {
+    display: flex;
+    justify-content: space-between;
+}
+
+.chaseCustomTextWrapper {
+    text-transform: lowercase;
+}
+
+.chaseCustomText::after {
+    content: "custom";
+}
+
+.chaseDefaultText::after {
+    content: "default"
+}
+
+.chaseCustomText {
+    color: #b53434;
+    margin: 0.2em;
+}
+
+.chaseDefaultText {
+    color: #7474a7;
+    margin: 0.2em;
+}
+
 .chaseAccuracyWrapper,
 .chaseWpmWrapper {
     margin-right: 0.8em
@@ -340,7 +386,7 @@ span.stats {
 }
 
 .skillLevel_0 {
-    background-color: white;
+    background-color: #f7f7f7;
 }
 
 .skillLevel_1 {
@@ -416,6 +462,7 @@ animation: blinkingCursor 1.3s linear infinite;
     border-radius: 1em;
     opacity: 0.95;
     box-shadow: 11px 17px 7px 0 rgba(0, 0, 0, 0.2);
+    z-index: 10;
 }
 
 .popupbox.closed {
@@ -427,9 +474,16 @@ animation: blinkingCursor 1.3s linear infinite;
     opacity: 0;
 }
 
-@media screen and (max-width: 750px) {}
+@media screen and (max-width: 750px) {
+    span.chaseCustomText::after {
+        content: "c";
+    }
+    .chaseDefaultText::after {
+        content: "d"
+    }
+}
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 600px) {
 
     .chase {
         flex: 49%;
@@ -441,8 +495,8 @@ animation: blinkingCursor 1.3s linear infinite;
     }
 
     .chase:nth-child(3n-1) {
-        border-left: inherit;
-        border-right: inherit;
+        border-left: 1px solid #b9b9b9;
+        border-right: 1px solid #b9b9b9;
     }
 
     .chase:nth-child(even) {
@@ -450,13 +504,33 @@ animation: blinkingCursor 1.3s linear infinite;
         border-right: 1px solid #b9b9b9;
     }
 
+    .chase:nth-child(odd) {
+        border-left: none;
+        border-left: 1px solid #b9b9b9;
+    }
+
     .chase:nth-child(-n+3) {
-        border-top: inherit;
+        border-top: 1px solid #b9b9b9;
     }
 
     .chase:nth-child(-n+2) {
         border-top: 1px solid #b9b9b9;
     }
+}
+
+@media screen and (max-width: 440px) { 
+    .chase {
+        flex: 90%;
+        max-width: 90%;
+        border: 1px solid #b9b9b9 !important;
+        border-bottom: none !important;
+    }
+    .chase:last-child {
+        border-bottom: 1px solid #b9b9b9 !important;
+    }
+
+
+
 }
 
 @keyframes blinkingCursor {
