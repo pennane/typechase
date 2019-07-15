@@ -170,21 +170,21 @@
     // Calculate a skilllevel from WPM
     function getSkillLevel(wpm) {
         let level = 0;
-        if (wpm <= 25) {
+        if (wpm <= 20) {
             level = 1;
-        } else if (wpm <= 30) {
+        } else if (wpm <= 35) {
             level = 2;
-        } else if (wpm <= 50) {
+        } else if (wpm <= 60) {
             level = 3;
-        } else if (wpm <= 70) {
+        } else if (wpm <= 75) {
             level = 4
-        } else if (wpm <= 95) {
+        } else if (wpm <= 90) {
             level = 5
-        } else if (wpm <= 120) {
+        } else if (wpm <= 110) {
             level = 6
-        } else if (wpm <= 140) {
+        } else if (wpm <= 200 ) {
             level = 7
-        }
+        } 
         return level
     }
 
@@ -376,8 +376,7 @@
             },
             stats: {
                 wpm: undefined,
-                accuracy: undefined,
-                skillLevel: undefined
+                accuracy: undefined
             },
             custom: custom,
             completed: false,
@@ -491,6 +490,23 @@
 
     }
 
+    // Opens, and closes, the help element 
+    function openHelp(state, textInstance) {
+        const element = document.getElementById("chaseinfo")
+
+        // Open
+        if (state === true) {
+            changeFocusState(true, textInstance, false)
+            showElement(element, 3, "flex")
+
+            // Close
+        } else if (state === false) {
+            changeFocusState(false, textInstance, false)
+            hideElement(element, -1)
+        }
+
+    }
+
     // Main listening function, a so called main function
     function typingListener(event, textInstance) {
 
@@ -557,7 +573,6 @@
             let skillLevel = getSkillLevel(wpm)
             textInstance.stats.wpm = wpm
             textInstance.stats.accuracy = accuracy
-            textInstance.stats.skillLevel = skillLevel
             setVisualStats(textInstance, "default")
         }
 
@@ -629,7 +644,7 @@
         let head = document.createElement('div')
         head.setAttribute('class', 'chaseHead')
         let body = document.createElement('div')
-        body.setAttribute('class', 'chaseBody skillLevel_' + (trimmedInstance.stats.skillLevel | getSkillLevel(trimmedInstance.stats.wpm)))
+        body.setAttribute('class', 'chaseBody skillLevel_' + (getSkillLevel(trimmedInstance.stats.wpm)))
         let footer = document.createElement('div')
         footer.setAttribute('class', 'chaseFooter')
 
@@ -912,6 +927,16 @@
     // Handle custom text cancel "events"
     document.querySelector("#cancelcustomtext").addEventListener("click", (event) => {
         openCustomTextMenu(false, textInstance)
+    })
+
+    // Handle open help "events"
+    document.querySelector("#showhelp").addEventListener("click", (event) => {
+        openHelp(true, textInstance)
+    })
+
+    // Handle close help "events"
+    document.querySelector("#closehelp").addEventListener("click", (event) => {
+        openHelp(false, textInstance)
     })
 
     // Handle open history"events"

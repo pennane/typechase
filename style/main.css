@@ -13,16 +13,47 @@ body {
     height: 100%;
 }
 
-h1,
-h2 {
+h1, h2, h3, h4 {
     font-weight: 500;
     text-transform: lowercase;
+}
+
+h4 {
+    display: inline;
+    color: #2f4faf;
+    font-style: italic;
+
 }
 
 .mainheader {
     margin-top: 0.7em;
     margin-bottom: 1em;
     font-size: 1.9em;
+}
+
+#chaseinfo {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: white;
+    z-index: -2;
+    justify-content: center;
+}
+
+.infowrapper {
+    padding: 1em 2em;
+    box-sizing: border-box;
+    max-width: 900px;
+    padding-top: 7vh;
+    width: 100%
+}
+
+header {
+    display: flex;
+    align-items: center;
 }
 
 main {
@@ -90,6 +121,27 @@ div#cancelcustomtext {
     background-color: #e5e5e5;
 }
 
+.button.fakebutton {
+    margin: 0;
+    transition: none;
+    display: inline-flex;
+}
+
+.button.fakebutton.text {
+    width: initial;
+    height: initial;
+    font-size: 1.6em;
+}
+
+.button.fakebutton:hover {
+    cursor: initial;
+    background-color: inherit;
+}
+
+.fakebuttondesc {
+    display: inline;
+}
+
 #typechase {
     display: flex;
     flex-direction: column;
@@ -100,7 +152,6 @@ div#cancelcustomtext {
 
 #uudelleen {
     width: 30px;
-
 }
 
 #unfocus {
@@ -251,14 +302,20 @@ span.stats {
     box-sizing: border-box;
     max-width: 900px;
     padding-top: 7vh;
+    width: 100%
 }
 
-.historyhead {
+.historyhead, .helphead  {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-left: 0.3em;
 }
+
+.helpbody {
+    width: 500px;
+    max-width: 90%;
+}
+
 
 .chase {
     border: 1px solid #b9b9b9;
@@ -272,11 +329,6 @@ span.stats {
     min-height: 130px;
     border-top: 0;
     cursor: pointer;
-}
-
-.chase:only-child {
-    flex: 1;
-    max-width: none;
 }
 
 .chase:nth-child(-n+3) {
@@ -307,7 +359,13 @@ span.stats {
     justify-content: space-between;
 }
 
-.chaseHeadRight {}
+.chaseHeadLeft.fake {
+    width: 180px;
+}
+
+.chaseId.fake {
+    width: 167px;
+}
 
 .chaseHeadLeft>.button {
     margin: 0;
@@ -378,6 +436,7 @@ span.stats {
 
 .chaseTime {
     text-align: right;
+    display: flex;
 }
 
 .chasehhmmss {
@@ -474,6 +533,36 @@ animation: blinkingCursor 1.3s linear infinite;
     opacity: 0;
 }
 
+.interfaceinfopart {
+    display: flex;
+    align-items: center;
+    margin: 0.8em 0;
+}
+
+.interfaceinfopart > h4 {
+    margin: 0;
+    margin-left: 0.2em;
+    margin-right: 0.4em;
+}
+
+.interfaceinfopart > p {
+    margin: 0;
+}
+
+.interfaceexample {
+    border: 1px solid #e7e7e7;
+    margin: 0.3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chase.chase_example {
+    width: 300px;
+    max-width: 90%;
+    cursor: initial;
+}
+
 @media screen and (max-width: 750px) {
     span.chaseCustomText::after {
         content: "c";
@@ -484,6 +573,15 @@ animation: blinkingCursor 1.3s linear infinite;
 }
 
 @media screen and (max-width: 600px) {
+
+    .interfaceinfopart {
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 1.5em 0;
+    }
+    .interfaceinfopart > h4 {
+        margin: 0;
+    }
 
     .chase {
         flex: 49%;

@@ -5,6 +5,7 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 
 ## COMPLETED:
 * All old features now exist in this new version
+* Easy to understand information page
 * Calculates stats and skill level
 * Saves completed runs to history and dom
 * Translated to english
@@ -17,8 +18,8 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 * Fix seldom happening event where spaces change position when active. (could be fixed by forming character spans into words)
 * Show fastest time for current text
 * Show stuff about the current text (length, difficulty?, times typed)
-* Ensure other browser support
-* Show stats if getting better or worse in text history
+* Ensure other browser support (currently only known to work flawlesly on chromium)
+* Prompt user about stat improving
 * Calculate average accuracy
 * (Custom event based dom interaction ?)
 * ~~Calculate average wpm~~
