@@ -70,114 +70,124 @@
                                 class="fas fa-times"></i></button>
                     </div>
                     <div class="helpbody">
-                            <h3>What exactly?</h3>
-                            <p>Typechase -the writing game, of sorts. Meant for personal typing performance practice and
-                                inspection.
-                            </p>
-                            <h3>How to?</h3>
-                            <p>Open the main window and simply start typing the content of the window.</p>
-                            <p>After finishing typing you will be presented your stats; speed in <a
-                                    href="https://en.wikipedia.org/wiki/Words_per_minute" target="_blank">WPM</a> <span
-                                    class="small">(words per minute)</span>  and accuracy as a percentage calculated from missed characters.</p>
-                            <p>Typechase stores your attempts in local storage allowing to come back and try to see possible stat improvements.</p>
-                            <h3>Interface</h3>
-                            <div class="interfaceinfopart">
-                                <div class="button fakebutton"><i class="fas fa-history"></i></div>
-                                <h4>History:</h4>
-                                <p class="fakebuttondesc">Reveals previous chases and stats</p>
-                            </div>
-                            <div class="interfaceinfopart">
-                                <div class="button fakebutton"><i class="fas fa-random"></i></div>
-                                <h4>Random:</h4>
-                                <p class="fakebuttondesc">Loads a random text into the game</p>
-                            </div>
-                            <div class="interfaceinfopart">
-                                <div class="button fakebutton"><i class="fas fa-file-alt"></i></div>
-                                <h4>Custom:</h4>
-                                <p class="fakebuttondesc">Loads your custom text into the game</p>
-                            </div>
-                            <div class="interfaceinfopart">
-                                <div class="button fakebutton"><i class="fas fa-undo"></i></div>
-                                <h4>Restart:</h4>
-                                <p class="fakebuttondesc">Restarts the current chase</p>
-                            </div>
-                            <div class="interfaceinfopart">
-                                <div class="button fakebutton text">0 wpm</div>
-                                <h4>WPM:</h4>
-                                <p class="fakebuttondesc">Displays current wpm</p>
-                            </div>
-                            <div class="interfaceinfopart">
-                                <div class="button fakebutton text">100 %</div>
-                                <h4>Accuracy:</h4>
-                                <p class="fakebuttondesc">Displays current accuracy</p>
-                            </div>
-                            <div class="interfaceinfopart">
-                                <span id="last10WpmParent" title="calculated based on last 10 chases" class="skillLevel_5">
-                                    <span id="last10wpm">79</span>
-                                    <span>wpm</span>
-                                </span>
-                                <h4>Average wpm:</h4>
-                                <p class="fakebuttondesc">Displays short-term average WPM</p>
-                            </div>
-                            <div class="interfaceinfopart">
-                                <div class="chase chase_example">
-                                    <div class="chaseHead">
-                                        <div class="chaseHeadLeft">
-                                            <span class="chaseTitle">So go and dance</span>
-                                            <div class="button fakebutton"><i class="fas fa-times"></i></div>
-                                        </div>
-                                        <div class="chaseHeadRight">
-                                            <span class="chaseId">8d8fe2bacab80986</span>
-                                        </div>
-                                    </div>
-                                    <div class="chaseBody skillLevel_5">
-                                        <div class="chaseWpmWrapper">
-                                            <span class="chaseWpm">78</span><span class="chaseWpmText">WPM</span>
-                                        </div>
-                                        <div class="chaseAccuracyWrapper"><span class="chaseAccuracy">98</span>
-                                            <span class="chaseAccuracyText">%</span>
-                                        </div>
-                                    </div>
-                                    <div class="chaseFooter">
-                                        <div class="chaseCustomTextWrapper">
-                                            <span class="chaseDefaultText" title="default text"></span>
-                                        </div>
-                                        <div class="chaseTime">
-                                            <span class="chaseddmmyy">12.7.2019</span>
-                                            <span class="chasehhmmss">16:07:11</span>
-                                        </div>
-                                    </div>
-                                    <span class="chaseFullText">
-                                        So go and dance yourself clean. Go and dance yourself clean, yeah.
-                                        You're blowing Marxism to pieces. Baby, they're arguments, the pieces
-                                    </span>
-                                </div>
-                                <h4>Chase element:</h4>
-                                <p class="fakebuttondesc">
-                                    Displays previous chase run and its stats. Click to copy its original text to the clipboard.
-                                </p>
-                            </div>
-                            <div class="interfaceinfopart">
-                                <div class="interfaceexample">
-                                    <div class="chaseHeadLeft fake">
+                        <h3>What exactly?</h3>
+                        <p>Typechase -the writing game, of sorts. Meant for personal typing performance practice and
+                            inspection.
+                        </p>
+                        <h3>How to?</h3>
+                        <p>Open the main window and simply start typing the content of the window.</p>
+                        <p>After finishing typing you will be presented your stats; speed in <a
+                                href="https://en.wikipedia.org/wiki/Words_per_minute" target="_blank">WPM</a> <span
+                                class="small">(words per minute)</span> and accuracy as a percentage calculated from
+                            missed characters.</p>
+                        <p>Typechase stores your attempts in local storage allowing to come back and try to see possible
+                            stat improvements.</p>
+                        <div class="skillref">
+                            <h3>Skill levels</h3>
+                            <table class="skilltable">
+                                <tbody class="skilltablebody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <h3>Interface</h3>
+                        <div class="interfaceinfopart">
+                            <div class="button fakebutton"><i class="fas fa-history"></i></div>
+                            <h4>History:</h4>
+                            <p class="fakebuttondesc">Reveals previous chases and stats</p>
+                        </div>
+                        <div class="interfaceinfopart">
+                            <div class="button fakebutton"><i class="fas fa-random"></i></div>
+                            <h4>Random:</h4>
+                            <p class="fakebuttondesc">Loads a random text into the game</p>
+                        </div>
+                        <div class="interfaceinfopart">
+                            <div class="button fakebutton"><i class="fas fa-file-alt"></i></div>
+                            <h4>Custom:</h4>
+                            <p class="fakebuttondesc">Loads your custom text into the game</p>
+                        </div>
+                        <div class="interfaceinfopart">
+                            <div class="button fakebutton"><i class="fas fa-undo"></i></div>
+                            <h4>Restart:</h4>
+                            <p class="fakebuttondesc">Restarts the current chase</p>
+                        </div>
+                        <div class="interfaceinfopart">
+                            <div class="button fakebutton text">0 wpm</div>
+                            <h4>WPM:</h4>
+                            <p class="fakebuttondesc">Displays current wpm</p>
+                        </div>
+                        <div class="interfaceinfopart">
+                            <div class="button fakebutton text">100 %</div>
+                            <h4>Accuracy:</h4>
+                            <p class="fakebuttondesc">Displays current accuracy</p>
+                        </div>
+                        <div class="interfaceinfopart">
+                            <span id="last10WpmParent" title="calculated based on last 10 chases" class="skillLevel_5">
+                                <span id="last10wpm">79</span>
+                                <span>wpm</span>
+                            </span>
+                            <h4>Average wpm:</h4>
+                            <p class="fakebuttondesc">Displays short-term average WPM</p>
+                        </div>
+                        <div class="interfaceinfopart">
+                            <div class="chase chase_example">
+                                <div class="chaseHead">
+                                    <div class="chaseHeadLeft">
                                         <span class="chaseTitle">So go and dance</span>
                                         <div class="button fakebutton"><i class="fas fa-times"></i></div>
                                     </div>
+                                    <div class="chaseHeadRight">
+                                        <span class="chaseId">8d8fe2bacab80986</span>
+                                    </div>
                                 </div>
-        
-                                <h4>Chase title:</h4>
-                                <p class="fakebuttondesc">Text title and a button for removing the chase from history.</p>
-                            </div>
-                            <div class="interfaceinfopart">
-                                <div class="interfaceexample">
-                                    <span class="chaseId fake">8d8fe2bacab80986</span>
+                                <div class="chaseBody skillLevel_5">
+                                    <div class="chaseWpmWrapper">
+                                        <span class="chaseWpm">78</span><span class="chaseWpmText">WPM</span>
+                                    </div>
+                                    <div class="chaseAccuracyWrapper"><span class="chaseAccuracy">98</span>
+                                        <span class="chaseAccuracyText">%</span>
+                                    </div>
                                 </div>
-                                <h4>Chase id:</h4>
-                                <p class="fakebuttondesc">Special id for the text written. Every text has its own.</p>
+                                <div class="chaseFooter">
+                                    <div class="chaseCustomTextWrapper">
+                                        <span class="chaseDefaultText" title="default text"></span>
+                                    </div>
+                                    <div class="chaseTime">
+                                        <span class="chaseddmmyy">12.7.2019</span>
+                                        <span class="chasehhmmss">16:07:11</span>
+                                    </div>
+                                </div>
+                                <span class="chaseFullText">
+                                    So go and dance yourself clean. Go and dance yourself clean, yeah.
+                                    You're blowing Marxism to pieces. Baby, they're arguments, the pieces
+                                </span>
                             </div>
-        
+                            <h4>Chase element:</h4>
+                            <p class="fakebuttondesc">
+                                Displays previous chase run and its stats. Click to copy its original text to the
+                                clipboard.
+                            </p>
+                        </div>
+                        <div class="interfaceinfopart">
+                            <div class="interfaceexample">
+                                <div class="chaseHeadLeft fake">
+                                    <span class="chaseTitle">So go and dance</span>
+                                    <div class="button fakebutton"><i class="fas fa-times"></i></div>
+                                </div>
+                            </div>
+
+                            <h4>Chase title:</h4>
+                            <p class="fakebuttondesc">Text title and a button for removing the chase from history.</p>
+                        </div>
+                        <div class="interfaceinfopart">
+                            <div class="interfaceexample">
+                                <span class="chaseId fake">8d8fe2bacab80986</span>
+                            </div>
+                            <h4>Chase id:</h4>
+                            <p class="fakebuttondesc">Special id for the text written. Every text has its own.</p>
+                        </div>
+
                     </div>
-                    
+
                 </div>
 
             </div>
@@ -187,7 +197,16 @@
                         <h2>Chasing history</h2><button class="button" id="closehistory" title="close"><i
                                 class="fas fa-times"></i></button>
                     </div>
-                    <div id="chaselist"></div>
+                    <div class="historybody">
+                            <div class="skillref">
+                                    <h3>Skill levels</h3>
+                                    <table class="skilltable">
+                                        <tbody class="skilltablebody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="chaselist"></div>
+                    </div>
                 </div>
             </div>
             <div id="input-text">

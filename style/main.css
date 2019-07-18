@@ -305,6 +305,7 @@ span.stats {
     width: 100%
 }
 
+
 .historyhead, .helphead  {
     display: flex;
     justify-content: space-between;
@@ -314,8 +315,61 @@ span.stats {
 .helpbody {
     width: 500px;
     max-width: 90%;
+    padding-bottom: 6em;
+}
+.historybody {
+    display: flex;
+    margin-top: 0.4em;
 }
 
+.historybody > .skillref {
+    margin-right: calc(0.5em + 0.5vw);
+}
+
+.historybody tr {
+    display: flex;
+    flex-direction: column;
+    border: none;
+}
+
+.historybody .skilltablebody {
+        border: 1px solid #b9b9b9;
+
+}
+
+.historybody > .skillref > h3 {
+    margin: 0;
+    margin-bottom: 0.7em;
+    font-style: italic;
+    font-weight: 400;
+}
+
+.skillref > h3 {
+    margin-bottom: 0.7em;
+}
+
+.skillref {
+    margin-bottom: 2em;
+}
+
+
+td.skillrefcontent {
+    background: white;
+    color: black;
+    font-size: 0.9em
+}
+
+.skilltable {
+    border-collapse: collapse;
+}
+
+.skilltablebody > tr {
+    border: 1px solid #b9b9b9;
+}
+
+.skilltablebody td {
+    padding: 0.2em;
+}
 
 .chase {
     border: 1px solid #b9b9b9;
@@ -445,7 +499,8 @@ span.stats {
 }
 
 .skillLevel_0 {
-    background-color: #f7f7f7;
+    background-color: #6c5aff;
+    color: white;
 }
 
 .skillLevel_1 {
@@ -572,7 +627,7 @@ animation: blinkingCursor 1.3s linear infinite;
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 730px) {
 
     .interfaceinfopart {
         flex-direction: column;
@@ -616,7 +671,7 @@ animation: blinkingCursor 1.3s linear infinite;
     }
 }
 
-@media screen and (max-width: 440px) { 
+@media screen and (max-width: 500px) { 
     .chase {
         flex: 90%;
         max-width: 90%;

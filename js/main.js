@@ -50,6 +50,92 @@
     let storage = new Storage()
     let focused = true;
 
+    // Calculate a skilllevel from WPM
+    
+
+    let skillLevels = [
+        {
+            name: "Beginner",
+            level: 1, 
+            lowest: 0,
+            highest: 15
+        },
+        {
+            name: "Intermediate",
+            level: 2, 
+            lowest: 15,
+            highest: 30
+        },
+        {
+            name: "Average",
+            level: 3, 
+            lowest: 30,
+            highest: 45
+        },
+        {
+            name: "Good",
+            level: 4, 
+            lowest: 45,
+            highest: 60
+        },
+        {
+            name: "Professional",
+            level: 5, 
+            lowest: 60,
+            highest: 80
+        },
+        {
+            name: "Master",
+            level: 6, 
+            lowest: 80,
+            highest: 100
+        },
+        {
+            name: "Hypertyper",
+            level: 7, 
+            lowest: 100,
+            highest: 150
+        },
+        {
+            name: "Unrealistic",
+            level: 0, 
+            lowest: 150,
+            highest: Infinity
+        }
+    ];
+    function getSkillLevel(wpm, skillLevels) {
+        let level = 0;
+        skillLevels.forEach((skill) => {
+            if (wpm >= skill.lowest && wpm < skill.highest) {
+                level = skill
+            }
+        })
+        return level
+    }
+
+    function setDOMSkillRef(skillLevels) {
+        [...document.querySelectorAll(".skilltablebody")].forEach(destination => {
+            while (destination.firstChild) {
+                destination.removeChild(destination.firstChild);
+            }
+            skillLevels.forEach(skill => {
+                let tr = document.createElement("tr")
+                let title = document.createElement("td")
+                let content = document.createElement("td")
+    
+                tr.setAttribute('class', 'skillLevel_'+skill.level)
+                content.setAttribute('class', 'skillrefcontent')
+                title.textContent = skill.name
+                content.textContent = ""+skill.lowest + "-" + (skill.highest.toString().match(/^\d+$/) ? skill.highest : "") + " wpm"
+    
+                tr.appendChild(title)
+                tr.appendChild(content)
+                destination.appendChild(tr)
+            })
+        })
+    }
+
+    
     // Mobile check
     window.addEventListener("load", () => {
         window.mobilecheck = function () {
@@ -183,26 +269,7 @@
         return accuracy
     }
 
-    // Calculate a skilllevel from WPM
-    function getSkillLevel(wpm) {
-        let level = 0;
-        if (wpm <= 20) {
-            level = 1;
-        } else if (wpm <= 35) {
-            level = 2;
-        } else if (wpm <= 60) {
-            level = 3;
-        } else if (wpm <= 75) {
-            level = 4
-        } else if (wpm <= 90) {
-            level = 5
-        } else if (wpm <= 110) {
-            level = 6
-        } else if (wpm <= 200 ) {
-            level = 7
-        } 
-        return level
-    }
+    
 
     function completedChase() {
         setVisualStats(textInstance, "completed")
@@ -586,7 +653,7 @@
         if (characterindex > 0) {
             let wpm = getWPM(textInstance)
             let accuracy = getAccuracy(textInstance)
-            let skillLevel = getSkillLevel(wpm)
+            let skillLevel = getSkillLevel(wpm, skillLevels).level
             textInstance.stats.wpm = wpm
             textInstance.stats.accuracy = accuracy
             setVisualStats(textInstance, "default")
@@ -652,6 +719,7 @@
     // Create a chaseElement from trimmed textinstance
     function createChaseElement(trimmedInstance) {
         let { hours, minutes, seconds, year, month, day } = sliceTime(trimmedInstance.timing)
+        let skillLevel = getSkillLevel(trimmedInstance.stats.wpm, skillLevels)
 
         let main = document.createElement('div')
         main.setAttribute('id', `chase_${trimmedInstance.timing}`)
@@ -660,7 +728,8 @@
         let head = document.createElement('div')
         head.setAttribute('class', 'chaseHead')
         let body = document.createElement('div')
-        body.setAttribute('class', 'chaseBody skillLevel_' + (getSkillLevel(trimmedInstance.stats.wpm)))
+        body.setAttribute('class', 'chaseBody skillLevel_' + skillLevel.level)
+        body.setAttribute('title', skillLevel.name)
         let footer = document.createElement('div')
         footer.setAttribute('class', 'chaseFooter')
 
@@ -858,7 +927,8 @@
     function chaseElementClick(event, storage) {
 
         let targetClasslist = [...event.target.classList];
-        let parentClasslist = event.target.parentNode ? [...event.target.parentNode.classList] : null;
+
+        let parentClasslist = event.target.parentNode.classList ? [...event.target.parentNode.classList] : null;
 
 
 
@@ -906,10 +976,11 @@
     function updateLast10Stats(storage) {
         let history = getTextHistory(storage)
         let wpm = calculateAverageWPM(history, 10, "descending")
-        let skill = getSkillLevel(wpm)
+        let skill = getSkillLevel(wpm, skillLevels)
         document.getElementById("averagestats").style.visibility = "unset"
         document.getElementById("last10wpm").textContent = wpm;
-        document.getElementById("last10WpmParent").className = "skillLevel_" + skill;
+        document.getElementById("last10WpmParent").className = "skillLevel_" + skill.level;
+        document.getElementById("last10WpmParent").title = skill.name
     }
 
 
@@ -919,6 +990,7 @@
 
     textInstance = setRandomTextInstance(texts)
     loadHistoryToDOM(history, document.getElementById("chaselist"))
+    setDOMSkillRef(skillLevels)
 
     if (history.length > 2) {
         updateLast10Stats(storage)
