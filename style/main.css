@@ -487,9 +487,13 @@ span.stats {
     position: relative;
 }
 
-.slicedSpace.currentChar {
+.slicedWord {
     display: inline-block;
-    width: 5.19px;
+    position: relative;
+}
+
+.slicedWord.slicedSpace {
+    line-height: 1.12em;
 }
 
 .currentChar::after {
@@ -503,10 +507,6 @@ margin: auto;
 background-color: #0087ca;
 
 animation: blinkingCursor 1.3s linear infinite;
-}
-
-.slicedSpace.currentChar::after {
-    bottom: -4px;
 }
 
 .popupbox {

@@ -107,18 +107,34 @@
         return obj[keys[keys.length * Math.random() << 0]];
     }
 
-    // Slice DOM element into one character long span elements.
-    function sliceString(text, classtag = "sliced") {
-        let outputElement = document.createElement("DIV")
-        outputElement.setAttribute("class", "slicedString")
+    // Slice textinstance's text content to dom as word spans
+    function sliceStringToWords(text, classtag = "sliced") {
+        let outputElement = document.createElement('DIV')
+        outputElement.setAttribute('class', 'slicedString')
+        console.log(text)
+        let i = 0;
+        text.words.forEach((word, j) => {
+            let wordElement = document.createElement('span')
+            wordElement.setAttribute('class', 'slicedWord')
+            word.characters.forEach((char, k) => {
+                let charElement = document.createElement('span')
+                let charAtIndex = text.content.charAt(i);
+                charElement.setAttribute("class", `slicedChar ${classtag}${i} ${charAtIndex.match(/\ /) ? 'slicedSpace' : null}`)
+                charElement.textContent = char
+                wordElement.appendChild(charElement)
+                i++;
+            })
 
-        for (let i = 0; i < text.length; i++) {
-            let char = document.createElement("span");
-            let charAtIndex = text.charAt(i);
-            char.setAttribute("class", `slicedChar ${classtag}${i} ${charAtIndex.match(/\ /) ? 'slicedSpace' : null}`)
-            char.innerText = charAtIndex
-            outputElement.appendChild(char)
-        }
+            if (j + 1 < text.words.length) {
+                let spaceCharElement = document.createElement('span')
+        
+                spaceCharElement.setAttribute("class", `slicedChar ${classtag}${i} slicedSpace`)
+                spaceCharElement.textContent = '\xa0'
+                wordElement.appendChild(spaceCharElement)
+                i++;
+            }
+            outputElement.appendChild(wordElement)
+        })
 
         while (destination.firstChild) {
             destination.removeChild(destination.firstChild);
@@ -290,7 +306,7 @@
 
     // Load a new text into the game and set text instance as loaded.
     function loadText(textInstance) {
-        sliceString(textInstance.text.content, slicedClassTag)
+        sliceStringToWords(textInstance.text, slicedClassTag)
         textInstance.loaded = true;
         return null;
     }
@@ -842,7 +858,7 @@
     function chaseElementClick(event, storage) {
 
         let targetClasslist = [...event.target.classList];
-        let parentClasslist = [...event.target.parentNode.classList]
+        let parentClasslist = event.target.parentNode ? [...event.target.parentNode.classList] : null;
 
 
 

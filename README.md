@@ -15,7 +15,6 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 
 ## TODO:
 
-* Fix seldom happening event where spaces change position when active. (could be fixed by forming character spans into words)
 * Show fastest time for current text
 * Show stuff about the current text (length, difficulty?, times typed)
 * Ensure other browser support (currently only known to work flawlesly on chromium)
@@ -23,7 +22,7 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 * Calculate average accuracy
 * (Custom event based dom interaction ?)
 * ~~Calculate average wpm~~
-* ~~Fix spaces at textbox line ends~~
+* ~~Fix spaces when displaying text~~
 * ~~Add a cursor on the current character~~
 * ~~Have a delete button on history elements. (maybe just visual ?)~~
 * ~~Make history be a separate popup window~~
