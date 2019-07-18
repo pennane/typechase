@@ -5,16 +5,17 @@ Currently the ~~old~~ present version found [here](https://arttu.pennanen.org/su
 
 ## COMPLETED:
 * All old features now exist in this new version
-* Easy to understand information page
-* Calculates stats and skill level
-* Saves completed runs to history and dom
+* Mobile support! (atleast partial)
+* Intuitive help page
+* Calculates stats and skill level on the go
+* Saves completed runs to history
 * Translated to english
-* Slightly less spaghetti than the old version
+* Code can be described 'less-spaghetti' in comparison to the old version.
 * Newer design!
 * Other!
 
 ## TODO:
-
+* More comprehensive mobile support
 * Show fastest time for current text
 * Show stuff about the current text (length, difficulty?, times typed)
 * Ensure other browser support (currently only known to work flawlesly on chromium)

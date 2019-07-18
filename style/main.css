@@ -31,6 +31,16 @@ h4 {
     font-size: 1.9em;
 }
 
+#mobile-textarea {
+    all: unset;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    opacity: 0;
+    display: none;
+}
+
 #chaseinfo {
     position: absolute;
     top: 0;
@@ -220,6 +230,7 @@ div#cancelcustomtext {
     border-left: 2px solid #999;
     padding-left: 1em;
     transition: all 0.2s;
+    position: relative;
 }
 
 #textbox {
@@ -318,12 +329,12 @@ span.stats {
     padding-bottom: 6em;
 }
 .historybody {
-    display: flex;
     margin-top: 0.4em;
 }
 
 .historybody > .skillref {
     margin-right: calc(0.5em + 0.5vw);
+    float: left;
 }
 
 .historybody tr {

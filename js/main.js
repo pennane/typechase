@@ -147,6 +147,13 @@
         };
         if (mobilecheck()) {
             alert("Huomaathan, että tämä sivu ei toimi ilman fyysistä näppäimistöä.");
+            document.getElementById("mobile-textarea").style.display = "block";
+            document.getElementById("mobile-textarea").addEventListener('click', (event) => {
+                event.target.focus()
+            })
+            document.getElementById("textbox").addEventListener('click', (event) => {
+                document.getElementById("mobile-textarea").click()
+            })
         }
     });
 
@@ -197,7 +204,6 @@
     function sliceStringToWords(text, classtag = "sliced") {
         let outputElement = document.createElement('DIV')
         outputElement.setAttribute('class', 'slicedString')
-        console.log(text)
         let i = 0;
         text.words.forEach((word, j) => {
             let wordElement = document.createElement('span')
