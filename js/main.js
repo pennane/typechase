@@ -11,7 +11,6 @@
             } else {
                 return this.storage.setItem(item, JSON.stringify(value))
             }
-
         }
         get(item) {
             return JSON.parse(this.storage.getItem(item))
@@ -32,7 +31,7 @@
             return this.storage.length > 0
         }
     }
- 
+
     // Mobile check
     document.getElementById("mobile-textarea").addEventListener('click', (event) => {
         event.target.focus()
@@ -58,54 +57,54 @@
     let focused = true;
 
     // Calculate a skilllevel from WPM
-    
+
 
     let skillLevels = [
         {
             name: "Beginner",
-            level: 1, 
+            level: 1,
             lowest: 0,
             highest: 15
         },
         {
             name: "Intermediate",
-            level: 2, 
+            level: 2,
             lowest: 15,
             highest: 30
         },
         {
             name: "Average",
-            level: 3, 
+            level: 3,
             lowest: 30,
             highest: 45
         },
         {
             name: "Good",
-            level: 4, 
+            level: 4,
             lowest: 45,
             highest: 60
         },
         {
             name: "Professional",
-            level: 5, 
+            level: 5,
             lowest: 60,
             highest: 80
         },
         {
             name: "Master",
-            level: 6, 
+            level: 6,
             lowest: 80,
             highest: 100
         },
         {
             name: "Hypertyper",
-            level: 7, 
+            level: 7,
             lowest: 100,
             highest: 150
         },
         {
             name: "Unrealistic",
-            level: 0, 
+            level: 0,
             lowest: 150,
             highest: Infinity
         }
@@ -129,12 +128,12 @@
                 let tr = document.createElement("tr")
                 let title = document.createElement("td")
                 let content = document.createElement("td")
-    
-                tr.setAttribute('class', 'skillLevel_'+skill.level)
+
+                tr.setAttribute('class', 'skillLevel_' + skill.level)
                 content.setAttribute('class', 'skillrefcontent')
                 title.textContent = skill.name
-                content.textContent = ""+skill.lowest + "-" + (skill.highest.toString().match(/^\d+$/) ? skill.highest : "") + " wpm"
-    
+                content.textContent = "" + skill.lowest + "-" + (skill.highest.toString().match(/^\d+$/) ? skill.highest : "") + " wpm"
+
                 tr.appendChild(title)
                 tr.appendChild(content)
                 destination.appendChild(tr)
@@ -142,7 +141,7 @@
         })
     }
 
-   
+
     /**
     * Calculate a 32 bit FNV-1a hash
     * Found here: https://gist.github.com/vaiorabbit/5657561
@@ -205,7 +204,7 @@
 
             if (j + 1 < text.words.length) {
                 let spaceCharElement = document.createElement('span')
-        
+
                 spaceCharElement.setAttribute("class", `slicedChar ${classtag}${i} slicedSpace`)
                 spaceCharElement.textContent = '\xa0'
                 wordElement.appendChild(spaceCharElement)
@@ -261,7 +260,7 @@
         return accuracy
     }
 
-    
+
 
     function completedChase() {
         setVisualStats(textInstance, "completed")
@@ -921,9 +920,6 @@
         let targetClasslist = [...event.target.classList];
 
         let parentClasslist = event.target.parentNode.classList ? [...event.target.parentNode.classList] : null;
-
-
-
         function findChaseObj(el) {
             if (el.className === "chase") {
                 return el;
@@ -943,9 +939,7 @@
         navigator.clipboard.writeText(chase.querySelector(".chaseFullText").textContent).catch(console.log)
         popup("Full text copied to clipboard", "#3283ca", 1750)
 
-
     }
-
 
     /**
    * Calculate average WPM from history array
@@ -975,7 +969,6 @@
         document.getElementById("last10WpmParent").title = skill.name
     }
 
-
     const textdata = await loadJSON(textsPath)
     const texts = await createTextsObject(textdata.texts)
     const history = getTextHistory(storage);
@@ -987,7 +980,6 @@
     if (history.length > 2) {
         updateLast10Stats(storage)
     }
-
 
     // Add eventlistener to chase objects
     document.addEventListener("click", (event) => {
@@ -1044,6 +1036,5 @@
     document.querySelector("#randomtext").addEventListener("click", (event) => {
         textInstance = setRandomTextInstance(texts)
     })
-
 
 })();
