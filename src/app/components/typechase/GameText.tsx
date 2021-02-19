@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React from 'react'
 import { TextInstance } from '../../typechase'
 
 const GameText = ({ textInstance }: { textInstance: TextInstance }) => {

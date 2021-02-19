@@ -5,14 +5,22 @@ import GameText from './GameText'
 import GameTextInput from './GameTextInput'
 
 const Game = () => {
-    let initialInstance = testTextInstance()
-    let [textInstance, setTextInstance] = useState(initialInstance)
+    let [textInstance, setTextInstance] = useState(null)
+
+    useEffect(() => {
+        testTextInstance().then((initialInstance) => {
+            setTextInstance(initialInstance)
+        })
+    }, [])
+
+    if (!textInstance) return null
 
     const handleInputChange = (e: any) => {
         let newTextInstance = {
             ...textInstance,
             inputContent: e.target.value
         }
+
         let update = updateTextInstanceThroughEvent(newTextInstance)
 
         if (update) {

@@ -1,3 +1,4 @@
+import React from 'react'
 import { useEffect, useRef } from 'react'
 import { TextInstance } from '../../typechase'
 
@@ -10,7 +11,11 @@ const GameTextInput = ({ textInstance, inputChange }: { textInstance: TextInstan
         }
     }, [])
 
-    return <input ref={textInput} value={textInstance.inputContent} onChange={inputChange} />
+    const forceFocus = () => {
+        ;(textInput.current as any).focus()
+    }
+
+    return <input ref={textInput} value={textInstance.inputContent} onChange={inputChange} onBlur={forceFocus} />
 }
 
 export default GameTextInput

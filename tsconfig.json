@@ -1,35 +1,37 @@
 {
-  "compilerOptions": {
-    "sourceMap": true,
-    "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "downlevelIteration": true,
-    "target": "es5",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2020",
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
-  },
-  "include": [
-    "src"
-  ]
+	"compilerOptions": {
+		"outDir": "build/dist",
+		"sourceMap": true,
+		"declaration": false,
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"downlevelIteration": true,
+		"resolveJsonModule": true,
+		"target": "es5",
+		"jsx": "react",
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"lib": [
+			"esnext",
+			"dom",
+			"esnext.asynciterable"
+		],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"noImplicitAny": false,
+		"strict": false,
+		"module": "commonjs",
+		"baseUrl": "./",
+	},
+	"include": [
+		"src"
+	]
+
 }
