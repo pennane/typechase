@@ -20,9 +20,13 @@ export interface Text {
 }
 
 export interface TextInstanceWord {
-    characters: string[]
+    word: string
+    characters: TextInstanceCharacter[]
     typed: boolean
+    startedAt: number | null
+    finsihedAt: number | null
     wpm: number | null
+    index: number
 }
 
 export enum TextInstanceCharacterState {
@@ -41,8 +45,11 @@ export interface TextInstanceCharacter {
 
 export interface TextInstance {
     words: TextInstanceWord[]
-    characters: TextInstanceCharacter[]
-    currentIndex: number
+    currentWord: TextInstanceWord
+    inputContent: string
+    highestWpm: number | null
+    averageWpm: number | null
+    accuracy: number | null
 }
 
 export interface GameUser {

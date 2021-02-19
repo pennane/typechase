@@ -137,6 +137,8 @@ const parseTexts = (texts: string[]): Text[] => {
 
 const parsedTexts = parseTexts(texts)
 
+const randomFromArray = (arr: any[]): any => arr[(arr.length * Math.random()) | 0]
+
 export const getAll = (): Text[] => {
     return parsedTexts
 }
@@ -144,5 +146,10 @@ export const getAll = (): Text[] => {
 export const getById = (id: string): Text | null => {
     const text = parsedTexts.find((text) => text.id === id)
     if (!text) return null
+    return text
+}
+
+export const getRandom = (): Text => {
+    const text = randomFromArray(parsedTexts)
     return text
 }

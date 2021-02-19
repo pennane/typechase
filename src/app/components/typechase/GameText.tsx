@@ -2,9 +2,8 @@ import { useEffect } from 'react'
 import { TextInstance } from '../../typechase'
 
 const GameText = ({ textInstance }: { textInstance: TextInstance }) => {
-    const { words, characters, currentIndex } = textInstance
+    const { words } = textInstance
 
-    let characterIndex = 0
     return (
         <div>
             {words &&
@@ -14,15 +13,14 @@ const GameText = ({ textInstance }: { textInstance: TextInstance }) => {
                             {word.characters.map((character, j) => {
                                 const el = (
                                     <span
-                                        className={`character state-${characters[characterIndex].state} ${
-                                            characters[j].reached ? ' reached' : ''
-                                        } ${currentIndex === characterIndex}`}
+                                        className={`character state-${character.state} ${
+                                            character.reached ? ' reached' : ''
+                                        }`}
                                         key={`${i}-${j}`}
                                     >
-                                        {character}
+                                        {character.key}
                                     </span>
                                 )
-                                characterIndex++
                                 return el
                             })}
                         </span>
