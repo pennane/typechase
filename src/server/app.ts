@@ -1,4 +1,4 @@
-import gateway from './gateway/index'
+import gateway from './services/game'
 
 import express from 'express'
 import cors from 'cors'
@@ -6,6 +6,7 @@ import redis from 'redis'
 import session from 'express-session'
 import connectRedis from 'connect-redis'
 import textRouter from './controllers/texts'
+import gameRouter from './controllers/games'
 import middleware from './utils/middleware'
 
 const store = connectRedis(session)
@@ -28,6 +29,7 @@ app.use(
     })
 )
 app.use('/api/text', textRouter)
+app.use('/api/game', gameRouter)
 app.use(middleware.unknownEndpoint)
 
 export default app

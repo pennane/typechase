@@ -1,5 +1,5 @@
 import texts from '../data/parsedTexts'
-import { GameText } from '../types/text'
+import { GameText } from '../types'
 import { randomFromArray } from '../utils'
 
 const getById = (id: string): GameText | null => {

@@ -1,7 +1,9 @@
-import React from 'react'
-import { GameInstance, GamePlayer } from '../typechase'
+import React, { useState } from 'react'
+import { GameInstance, GamePlayer, randomFromRange } from '../typechase'
 
 const Player = ({ player, me, words }: { player: GamePlayer; me: boolean; words: number }) => {
+    if (player.spectator) return null
+
     let left
     if (player.finished) {
         left = '100%'
@@ -12,14 +14,24 @@ const Player = ({ player, me, words }: { player: GamePlayer; me: boolean; words:
     }
 
     return (
-        <div className={me ? 'player me' : 'player'}>
-            <span className="player-name">{player.uuid} </span>
-            <span className="player-wpm"> {player.wpm | 0} wpm</span>
+        <div className={me ? 'player you' : 'player'}>
+            <div className="player-info">
+                <div className="player-name-container">
+                    <span className="player-name">
+                        {player.guest ? `Guest-${player.uuid.slice(0, 3)}` : player.name || 'unknown'}{' '}
+                    </span>
+                    {me && <span className="player-you">(you)</span>}
+                </div>
+
+                <span className="player-wpm"> {player.wpm | 0} wpm</span>
+            </div>
+
             <div className="player-performance">
                 <div
                     className="player-icon"
                     style={{
-                        left: left
+                        left: left,
+                        background: `linear-gradient(${player.theme[0]}deg, hsl(${player.theme[0]}, 100%, 44%), hsl(${player.theme[0]}, 100%, 44%))`
                     }}
                 />
             </div>
@@ -27,7 +39,7 @@ const Player = ({ player, me, words }: { player: GamePlayer; me: boolean; words:
     )
 }
 
-const GamePlayers = ({ gameInstance }: { gameInstance: GameInstance; me?: boolean }) => {
+const GamePlayers = ({ gameInstance }: { gameInstance: GameInstance }) => {
     const { players } = gameInstance
     return (
         <div className="players">

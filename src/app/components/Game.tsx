@@ -6,8 +6,8 @@ import GameText from './GameText'
 import GameTextInput from './GameTextInput'
 import GamePlayers from './GamePlayers'
 
-const Game = () => {
-    const gateway = getGateway('1')
+const Game = ({ gameId }: { gameId: string }) => {
+    let gateway = getGateway(gameId)
     let [textInstance, setTextInstance]: [TextInstance | null, any] = useState(null)
     let [gameInstance, setGameInstance]: [GameInstance | null, any] = useState(null)
     let [ping, setPing] = useState(null)
@@ -16,7 +16,6 @@ const Game = () => {
         gateway.start()
 
         return () => {
-            console.log('stopping')
             gateway.stop()
         }
     }, [])
@@ -35,7 +34,6 @@ const Game = () => {
             let { code, payload } = data
             switch (code) {
                 case 'game_register':
-                    console.log('register')
                     getById(payload.textId).then((text) => {
                         setTextInstance(textToTextInstance(text))
                         const newGameInstance = { ...gameInstance, ...payload }
@@ -46,8 +44,8 @@ const Game = () => {
                 case 'ping':
                     setPing(payload.ping)
                     break
-                case 'player_state':
-                    const updated = { ...gameInstance, players: payload }
+                case 'game_state':
+                    const updated = { ...gameInstance, ...payload }
                     updateGameInstance(updated)
                     break
                 default:
@@ -58,7 +56,17 @@ const Game = () => {
 
     if (!textInstance || !gameInstance) return null
 
+    const newGame = (id: string) => {
+        gateway.stop()
+        gateway.setGameId(id)
+        gateway.start()
+        setTextInstance(null)
+        setGameInstance(null)
+    }
+
     const handleInputChange = (e: any) => {
+        const isRunning = gameInstance.state === 'running' || gameInstance.state === 'finishing'
+        if (!isRunning || gameInstance.spectator) return
         let newTextInstance = {
             ...textInstance,
             inputContent: e.target.value
@@ -94,15 +102,26 @@ const Game = () => {
     }
 
     return (
-        <div className="game">
+        <div className={`game ${gameInstance.state}`}>
             <div className="game-stats">
                 <p>Ping: {ping >= 0 ? ping : 'undefined'} ms</p>
                 <p>Wpm: {textInstance.averageWpm || 0}</p>
                 <p>Accuracy: {textInstance.accuracy ? Math.floor(textInstance.accuracy * 100) : 100}%</p>
+                <p>Game state: '{gameInstance.state}'</p>
             </div>
             <GamePlayers gameInstance={gameInstance} />
             <GameText textInstance={textInstance} />
-            <GameTextInput inputChange={handleInputChange} textInstance={textInstance} />
+            <GameTextInput
+                state={gameInstance.state}
+                spectator={gameInstance.spectator}
+                inputChange={handleInputChange}
+                textInstance={textInstance}
+            />
+            {gameInstance.next && (
+                <button className="next-game" onClick={() => newGame(gameInstance.next)}>
+                    continue to new game
+                </button>
+            )}
         </div>
     )
 }

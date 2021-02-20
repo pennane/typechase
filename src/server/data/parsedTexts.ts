@@ -1,4 +1,4 @@
-import { GameText } from '../types/text'
+import { GameText } from '../types'
 
 const texts: GameText[] = [
     {

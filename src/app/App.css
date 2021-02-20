@@ -1,28 +1,114 @@
+.typechase {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.game {
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+}
+
+.game.waiting {
+    opacity: 0.7;
+    color: #949494;
+    pointer-events: none;
+}
+
+.game.starting {
+    opacity: 0.82;
+    color: #949494;
+}
+
+.game-stats {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.game-stats p {
+    margin: 1rem 0.5rem;
+}
+
+.game-stats p:first-of-type {
+    margin-left: 0;
+}
+
+.game-stats p:last-of-type {
+    margin-right: 0;
+}
+
+.players {
+    margin-bottom: 0.6rem;
+    width: 100%;
+}
+
 .player {
     display: flex;
 }
 
+.player-name-container {
+    display: flex;
+    margin-right: 0.5rem;
+    box-sizing: content-box;
+}
+
 .player-name {
-    max-width: 150px;
+    max-width: 120px;
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 0 0 auto;
+    font-weight: 600;
+    margin-right: 0.2rem;
 }
 
+.player-info {
+    display: flex;
+    width: 230px;
+}
+
+.player-you {
+    color: #25009b;
+    font-weight: 600;
+    font-size: 0.88rem;
+}
+
+.player-wpm {
+    color: #555456;
+    margin-left: auto;
+
+    width: 70px;
+}
 .player-performance {
     flex: 1 1 auto;
     position: relative;
+    padding-right: 16px;
+    margin: 0;
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
 }
 
 .player-icon {
     transition: left 1s linear;
     height: 16px;
     width: 16px;
-    background: red;
+    background: linear-gradient(45deg, white, #ffffff);
     border-radius: 999px;
     position: relative;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+.text {
+    line-height: 1.7;
+    margin-bottom: 1rem;
 }
 
 .state-0 {
@@ -42,4 +128,13 @@
 .state-3 {
     color: rgb(126, 175, 33);
     background-color: rgb(255 226 15 / 20%);
+}
+
+button.next-game {
+    margin-top: 2rem;
+    padding: 0.8rem;
+    background: linear-gradient(45deg, #8dccff, #7a8eff);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }

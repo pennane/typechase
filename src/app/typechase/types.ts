@@ -53,22 +53,31 @@ export interface TextInstance {
     accuracy: number | null
 }
 
+export type GameState = 'waiting' | 'running' | 'completed' | 'cancelled' | 'starting' | 'finishing'
+
 export interface GamePlayer {
+    [x: string]: any
     uuid: string
     wpm: null | number
     wordIndex: null | number
     finished: boolean
+    disconnected: boolean
+    spectator: boolean
+    theme: [number, number, number]
+    guest: boolean
 }
 
 export interface GameInstance {
     id: string
     uuid: string
-    state: 'waiting' | 'running' | 'completed' | 'cancelled'
+    state: GameState
     players: {
         [uuid: string]: GamePlayer
     }
     textId: string
     words: number
+    spectator: boolean
+    next: null | string
 }
 
 /*

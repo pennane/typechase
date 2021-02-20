@@ -1,4 +1,4 @@
-import { GameText } from '../types/text'
+import { GameText } from '../types'
 import { v4 } from 'uuid'
 
 const texts = [
