@@ -9,6 +9,7 @@ export interface CurrentUser {
 export interface Text {
     id: string
     content: string
+    words: number
     description: string
     added: Date | number
     likes: number
@@ -45,31 +46,29 @@ export interface TextInstanceCharacter {
 
 export interface TextInstance {
     words: TextInstanceWord[]
-    currentWord: TextInstanceWord
+    currentWord: TextInstanceWord | null
     inputContent: string
     highestWpm: number | null
     averageWpm: number | null
     accuracy: number | null
 }
 
-export interface GameUser {
+export interface GamePlayer {
+    uuid: string
+    wpm: null | number
+    wordIndex: null | number
+    finished: boolean
+}
+
+export interface GameInstance {
     id: string
-    username: string
-    name: string
-    currentWpm: number | null
-    currentIndex: number | null
-}
-
-export enum GameType {
-    Practice = 0,
-    Chase = 1
-}
-
-export interface Game {
-    type: GameType
-    text: Text
-    textInstance: TextInstance
-    users: GameUser[]
+    uuid: string
+    state: 'waiting' | 'running' | 'completed' | 'cancelled'
+    players: {
+        [uuid: string]: GamePlayer
+    }
+    textId: string
+    words: number
 }
 
 /*

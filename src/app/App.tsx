@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css'
-import Typechase from './components/typechase/Typechase'
+import Typechase from './components/Typechase'
 
 const App = () => {
     return (

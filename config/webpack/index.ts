@@ -1,5 +1,6 @@
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import processConfig from '../process/config'
 
 const config: webpack.Configuration = {
     mode: 'development',
@@ -38,7 +39,8 @@ const config: webpack.Configuration = {
     devtool: 'inline-source-map',
     devServer: {
         historyApiFallback: true,
-        port: 3000,
+        host: '0.0.0.0',
+        port: processConfig.ports.app,
         open: true,
         hot: true
     }
