@@ -1,6 +1,29 @@
-/* .reached {
-    background-color: rgb(0 0 0 / 5%);
-} */
+.player {
+    display: flex;
+}
+
+.player-name {
+    max-width: 150px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 0 0 auto;
+}
+
+.player-performance {
+    flex: 1 1 auto;
+    position: relative;
+}
+
+.player-icon {
+    transition: left 1s linear;
+    height: 16px;
+    width: 16px;
+    background: red;
+    border-radius: 999px;
+    position: relative;
+}
 
 .state-0 {
     color: gray;

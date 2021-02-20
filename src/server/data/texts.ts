@@ -1,4 +1,5 @@
 import { GameText } from '../types/text'
+import { v4 } from 'uuid'
 
 const texts = [
     `Always look on the bright side of life. Always look on the light side of life. If life seems jolly rotten, there's something you've forgotten, and that's to laugh and smile and dance and sing. When you're feeling in the dumps, don't be silly chumps; just purse your lips and whistle, that's the thing.`,
@@ -105,7 +106,11 @@ type TextTransformation = [RegExp | string, string]
 
 const transformations: TextTransformation[] = [
     [/[\“\”\„\‟\〝\〞\〟\＂]/g, '"'],
+<<<<<<< HEAD
     [/[\‘\’\‚\‛\＇]/g, "'"],
+=======
+    [/[\‘\’\‚\‛\＇\´]/g, "'"],
+>>>>>>> react
     [/(\r\n|\r|\n)/g, ' '],
     [/ {2,}/g, ' ']
 ]
@@ -114,16 +119,26 @@ const parseTexts = (texts: string[]): GameText[] => {
     return texts.map((text, index) => {
         let parsedContent = text.trim()
 
+<<<<<<< HEAD
         if (!parsedContent.endsWith('.')) {
+=======
+        const endsWithPunctuationMark = (text: string): boolean =>
+            text.endsWith('.') || text.endsWith('?') || text.endsWith('!')
+
+        if (!endsWithPunctuationMark(parsedContent)) {
+>>>>>>> react
             parsedContent = parsedContent.concat('.')
         }
 
         transformations.forEach((x) => (parsedContent = parsedContent.replaceAll(x[0], x[1])))
 
+        const id = v4()
+
         return {
-            id: String(index),
+            id: id,
             content: parsedContent,
-            description: 'a description',
+            words: parsedContent.split(' ').length,
+            description: 'default description',
             added: Date.now(),
             likes: 0,
             stats: {

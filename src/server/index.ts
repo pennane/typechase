@@ -1,15 +1,9 @@
-import express from 'express'
-import cors from 'cors'
-import textRouter from './controllers/texts'
 import http from 'http'
+import app from './app'
+import config from '../../config/process'
 
-const app = express()
 const server = http.createServer(app)
 
-app.use(express.json())
-app.use(cors())
-app.use('/api/text', textRouter)
-
-server.listen(3003, () => {
-    console.log(`Server running on port ${3003}`)
+server.listen(config.ports.server, () => {
+    console.log(`Server running on port ${config.ports.server}`)
 })

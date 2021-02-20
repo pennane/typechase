@@ -9,6 +9,7 @@ export interface CurrentUser {
 export interface Text {
     id: string
     content: string
+    words: number
     description: string
     added: Date | number
     likes: number
@@ -45,13 +46,18 @@ export interface TextInstanceCharacter {
 
 export interface TextInstance {
     words: TextInstanceWord[]
+<<<<<<< HEAD
     currentWord: TextInstanceWord
+=======
+    currentWord: TextInstanceWord | null
+>>>>>>> react
     inputContent: string
     highestWpm: number | null
     averageWpm: number | null
     accuracy: number | null
 }
 
+<<<<<<< HEAD
 export interface GameUser {
     id: string
     username: string
@@ -70,6 +76,24 @@ export interface Game {
     text: Text
     textInstance: TextInstance
     users: GameUser[]
+=======
+export interface GamePlayer {
+    uuid: string
+    wpm: null | number
+    wordIndex: null | number
+    finished: boolean
+}
+
+export interface GameInstance {
+    id: string
+    uuid: string
+    state: 'waiting' | 'running' | 'completed' | 'cancelled'
+    players: {
+        [uuid: string]: GamePlayer
+    }
+    textId: string
+    words: number
+>>>>>>> react
 }
 
 /*

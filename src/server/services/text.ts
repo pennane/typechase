@@ -1,4 +1,4 @@
-import texts from '../data/texts'
+import texts from '../data/parsedTexts'
 import { GameText } from '../types/text'
 import { randomFromArray } from '../utils'
 
