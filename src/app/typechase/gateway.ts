@@ -10,7 +10,6 @@ class Gateway {
     gameId: string
 
     constructor() {
-        console.log('once')
         this.connected = false
         this.restartAuto = true
         this.gameId = null
