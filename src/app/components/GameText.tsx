@@ -5,7 +5,7 @@ const GameText = ({ textInstance }: { textInstance: TextInstance }) => {
     const { words } = textInstance
 
     return (
-        <div>
+        <div className="text">
             {words &&
                 words.map((word, i) => {
                     return (

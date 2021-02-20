@@ -1,6 +1,6 @@
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import processConfig from '../process/config'
+import processConfig from '../process'
 
 const config: webpack.Configuration = {
     mode: 'development',

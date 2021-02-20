@@ -9,7 +9,8 @@
     "dev:front": "npm run start:front",
     "dev:back": "nodemon --watch src/server --ext ts --exec npm run start:back",
     "dev": "npm run dev:back & npm run dev:front",
-    "build": "webpack -p --config=config/webpack/prod.ts"
+    "build": "webpack -p --config=config/webpack/prod.ts",
+    "dock": "docker-compose up"
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.12.7",

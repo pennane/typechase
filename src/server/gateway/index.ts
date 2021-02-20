@@ -1,6 +1,6 @@
 import ws from 'ws'
 import Redis from 'ioredis'
-import config from '../../../config/process/config'
+import config from '../../../config/process'
 import { v4 } from 'uuid'
 import textService from '../services/text'
 
@@ -125,7 +125,14 @@ const init = async () => {
 
                     game.players[socketUUID] = updatedPlayer
 
-                    console.log(socketUUID, 'wpm', updatedPlayer.wpm, 'words typed', updatedPlayer.wordIndex)
+                    console.log(
+                        'user',
+                        socketUUID.slice(0, 8),
+                        'wpm',
+                        updatedPlayer.wpm,
+                        'words typed',
+                        updatedPlayer.wordIndex
+                    )
                     return
                 }
                 default:

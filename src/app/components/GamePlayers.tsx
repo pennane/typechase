@@ -13,7 +13,8 @@ const Player = ({ player, me, words }: { player: GamePlayer; me: boolean; words:
 
     return (
         <div className={me ? 'player me' : 'player'}>
-            <span className="player-name">{player.uuid}</span>
+            <span className="player-name">{player.uuid} </span>
+            <span className="player-wpm"> {player.wpm | 0} wpm</span>
             <div className="player-performance">
                 <div
                     className="player-icon"
@@ -29,7 +30,7 @@ const Player = ({ player, me, words }: { player: GamePlayer; me: boolean; words:
 const GamePlayers = ({ gameInstance }: { gameInstance: GameInstance; me?: boolean }) => {
     const { players } = gameInstance
     return (
-        <div>
+        <div className="players">
             {players &&
                 Object.keys(players).map((uuid, i) => {
                     return (

@@ -94,8 +94,8 @@ const Game = () => {
     }
 
     return (
-        <div>
-            <div>
+        <div className="game">
+            <div className="game-stats">
                 <p>Ping: {ping >= 0 ? ping : 'undefined'} ms</p>
                 <p>Wpm: {textInstance.averageWpm || 0}</p>
                 <p>Accuracy: {textInstance.accuracy ? Math.floor(textInstance.accuracy * 100) : 100}%</p>

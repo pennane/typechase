@@ -3,7 +3,7 @@ import Game from './Game'
 
 const Typechase = () => {
     return (
-        <div>
+        <div className="typechase">
             <Game />
         </div>
     )

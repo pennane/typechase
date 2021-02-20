@@ -1,4 +1,6 @@
-const GATEWAY_URL = 'ws://127.0.0.1:8002'
+import processConfig from '../../../config/process'
+
+const GATEWAY_URL = processConfig.urls.gateway
 
 class Gateway {
     connected: boolean
