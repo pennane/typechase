@@ -106,11 +106,7 @@ type TextTransformation = [RegExp | string, string]
 
 const transformations: TextTransformation[] = [
     [/[\“\”\„\‟\〝\〞\〟\＂]/g, '"'],
-<<<<<<< HEAD
-    [/[\‘\’\‚\‛\＇]/g, "'"],
-=======
     [/[\‘\’\‚\‛\＇\´]/g, "'"],
->>>>>>> react
     [/(\r\n|\r|\n)/g, ' '],
     [/ {2,}/g, ' ']
 ]
@@ -119,14 +115,10 @@ const parseTexts = (texts: string[]): GameText[] => {
     return texts.map((text, index) => {
         let parsedContent = text.trim()
 
-<<<<<<< HEAD
-        if (!parsedContent.endsWith('.')) {
-=======
         const endsWithPunctuationMark = (text: string): boolean =>
             text.endsWith('.') || text.endsWith('?') || text.endsWith('!')
 
         if (!endsWithPunctuationMark(parsedContent)) {
->>>>>>> react
             parsedContent = parsedContent.concat('.')
         }
 

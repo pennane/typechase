@@ -39,12 +39,8 @@ const config: webpack.Configuration = {
     devtool: 'inline-source-map',
     devServer: {
         historyApiFallback: true,
-<<<<<<< HEAD
-        port: 3000,
-=======
         host: '0.0.0.0',
         port: processConfig.ports.app,
->>>>>>> react
         open: true,
         hot: true
     }

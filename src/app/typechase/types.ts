@@ -46,37 +46,13 @@ export interface TextInstanceCharacter {
 
 export interface TextInstance {
     words: TextInstanceWord[]
-<<<<<<< HEAD
-    currentWord: TextInstanceWord
-=======
     currentWord: TextInstanceWord | null
->>>>>>> react
     inputContent: string
     highestWpm: number | null
     averageWpm: number | null
     accuracy: number | null
 }
 
-<<<<<<< HEAD
-export interface GameUser {
-    id: string
-    username: string
-    name: string
-    currentWpm: number | null
-    currentIndex: number | null
-}
-
-export enum GameType {
-    Practice = 0,
-    Chase = 1
-}
-
-export interface Game {
-    type: GameType
-    text: Text
-    textInstance: TextInstance
-    users: GameUser[]
-=======
 export interface GamePlayer {
     uuid: string
     wpm: null | number
@@ -93,7 +69,6 @@ export interface GameInstance {
     }
     textId: string
     words: number
->>>>>>> react
 }
 
 /*
