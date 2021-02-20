@@ -1,5 +1,6 @@
 import { GameText } from '../types/text'
 import { v4 } from 'uuid'
+import { promises as fs } from 'fs'
 
 const texts = [
     `Always look on the bright side of life. Always look on the light side of life. If life seems jolly rotten, there's something you've forgotten, and that's to laugh and smile and dance and sing. When you're feeling in the dumps, don't be silly chumps; just purse your lips and whistle, that's the thing.`,
@@ -115,7 +116,10 @@ const parseTexts = (texts: string[]): GameText[] => {
     return texts.map((text, index) => {
         let parsedContent = text.trim()
 
-        if (!parsedContent.endsWith('.')) {
+        const endsWithPunctuationMark = (text: string): boolean =>
+            text.endsWith('.') || text.endsWith('?') || text.endsWith('!')
+
+        if (!endsWithPunctuationMark(parsedContent)) {
             parsedContent = parsedContent.concat('.')
         }
 
@@ -127,10 +131,9 @@ const parseTexts = (texts: string[]): GameText[] => {
             id: id,
             content: parsedContent,
             words: parsedContent.split(' ').length,
-            description: 'a description',
+            description: 'default description',
             added: Date.now(),
             likes: 0,
-
             stats: {
                 totalChases: 0,
                 averageWpm: null,
@@ -141,5 +144,7 @@ const parseTexts = (texts: string[]): GameText[] => {
 }
 
 const parsedTexts = parseTexts(texts)
+
+fs.writeFile('./parsedTexts.json', JSON.stringify(parsedTexts)).then(() => console.log('yes'))
 
 export default parsedTexts
