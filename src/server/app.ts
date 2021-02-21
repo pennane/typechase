@@ -30,6 +30,7 @@ app.use(
 )
 app.use('/api/text', textRouter)
 app.use('/api/game', gameRouter)
+app.use(express.static('dist'))
 app.use(middleware.unknownEndpoint)
 
 export default app
