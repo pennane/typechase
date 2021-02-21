@@ -1,6 +1,6 @@
 import processConfig from '../../../config/process'
 
-const GATEWAY_URL = `ws://${window.location.hostname}:${processConfig.publicPorts.gateway}`
+const GATEWAY_URL = `ws://${window.location.hostname}:${processConfig.ports.gateway}`
 
 class Gateway {
     connected: boolean

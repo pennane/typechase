@@ -17,15 +17,14 @@ In the future the intension is to bring another database and implement authentic
 ```
 git clone https://github.com/Pennane/typechase
 cd typechase
-npm run dock
+npm run serve
 --> http://localhost
 ```
 
 ### Developing the application
 
 ```
-git clone https://github.com/Pennane/typechase
 cd typechase
-npm run dev:dock
+npm run dev
 --> http://localhost:8080
 ```

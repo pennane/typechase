@@ -1,6 +1,6 @@
 import texts from '../data/parsedTexts'
 import { GameText } from '../types'
-import { randomFromArray } from '../utils'
+import { randomFromArray } from '../utils/utils'
 
 const getById = (id: string): GameText | null => {
     const text = texts.find((gameText) => gameText.id === id)

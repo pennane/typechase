@@ -3,15 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start:front": "webpack serve --config config/webpack/prod.ts",
     "start:back": "ts-node src/server/index.ts",
-    "start": "npm run start:back & npm run start:front",
-    "dev:front": "webpack serve --config config/webpack/dev.ts",
+    "dev:front": "node_env=development webpack serve --config config/webpack/dev.ts",
     "dev:back": "nodemon --watch src/server --ext ts --exec npm run start:back",
-    "dev:dock": "docker-compose --file dev-docker-compose.yml up",
-    "dev": "npm run dev:back & npm run dev:front",
+    "dev": "npm run dev:front & docker-compose -f 'dev-docker-compose.yml' up",
     "build:front": "webpack --config=config/webpack/prod.ts",
-    "dock": "docker-compose --file docker-compose.yml up"
+    "serve": "docker-compose --file docker-compose.yml up"
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.12.7",

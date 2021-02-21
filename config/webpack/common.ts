@@ -33,15 +33,7 @@ const config: webpack.Configuration = {
             template: 'src/app/index.html'
         }),
         new webpack.HotModuleReplacementPlugin()
-    ],
-    devtool: 'inline-source-map',
-    devServer: {
-        historyApiFallback: true,
-        host: '0.0.0.0',
-        port: processConfig.ports.app,
-        open: true,
-        hot: true
-    }
+    ]
 }
 
 export default config

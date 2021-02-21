@@ -11,7 +11,7 @@ const config: webpack.Configuration = merge(common, {
     },
     devServer: {
         historyApiFallback: true,
-        host: '0.0.0.0',
+        host: '127.0.0.1',
         port: processConfig.ports.app,
         open: true,
         hot: true
