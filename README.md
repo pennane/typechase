@@ -12,10 +12,20 @@ In the future the intension is to bring another database and implement authentic
 
 ![example view](./example.png 'example view')
 
-#### Installation
+### Serving the application
 
 ```
 git clone https://github.com/Pennane/typechase
 cd typechase
-docker-compose up
+npm run dock
+--> http://localhost
+```
+
+### Developing the application
+
+```
+git clone https://github.com/Pennane/typechase
+cd typechase
+npm run dev:dock
+--> http://localhost:8080
 ```

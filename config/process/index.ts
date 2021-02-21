@@ -4,10 +4,10 @@ const config = {
         gateway: 3002,
         app: 8080
     },
-    urls: {
-        server: 'http://127.0.0.1:8003',
-        gateway: 'ws://127.0.0.1:8002',
-        app: 'http://127.0.0.1:8080'
+    publicPorts: {
+        server: 8003,
+        gateway: 8002,
+        app: 80
     }
 }
 

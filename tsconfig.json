@@ -32,6 +32,6 @@
 	},
 	"include": [
 		"src"
-, "config/webpack/index.ts", "config/config.ts"	]
+, "config/webpack/dev.ts", "config/config.ts"	]
 
 }

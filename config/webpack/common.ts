@@ -1,11 +1,13 @@
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import processConfig from '../process'
+import path from 'path'
 
 const config: webpack.Configuration = {
-    mode: 'development',
+    mode: 'production',
     output: {
-        publicPath: '/'
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, '../../dist')
     },
     entry: './src/app/index.tsx',
     module: {
@@ -20,10 +22,6 @@ const config: webpack.Configuration = {
                         plugins: ['@babel/plugin-transform-runtime']
                     }
                 }
-            },
-            {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader']
             }
         ]
     },

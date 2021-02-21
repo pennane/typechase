@@ -10,12 +10,20 @@ const isGameCompleted = (game): boolean => {
     return game.state === 'completed'
 }
 
+const isGameStarting = (game): boolean => {
+    return game.state === 'starting'
+}
+
 const isGameRunning = (game): boolean => {
     return game.state === 'running' || game.state === 'finishing'
 }
 
 const isGameRunningOrCompleted = (game): boolean => {
     return isGameCompleted(game) || isGameRunning(game)
+}
+
+const isGameRunningOrCompletedOrStarting = (game): boolean => {
+    return isGameCompleted(game) || isGameRunning(game) || isGameStarting(game)
 }
 
 const shouldBeSpectator = (game): boolean => {
@@ -106,7 +114,7 @@ const init = async () => {
         game.players[socketUUID] = player
 
         const players = Object.keys(game.players)
-        if (players.length >= 2 && !isGameRunningOrCompleted(game)) {
+        if (players.length >= 2 && !isGameRunningOrCompletedOrStarting(game)) {
             game.state = 'starting'
             setTimeout(() => {
                 console.log(`starting game ${game.id}`)
@@ -115,7 +123,7 @@ const init = async () => {
                 } else {
                     game.state = 'waiting'
                 }
-            }, 6000)
+            }, 8000)
         }
 
         socket.send(
@@ -127,8 +135,16 @@ const init = async () => {
 
         socket.on('close', () => {
             rsub.disconnect()
+            const playerIds = Object.keys(game.players)
+            const noPlayers = playerIds.length === 0 ? true : playerIds.every((id) => game.players[id].disconnected)
             const runningOrCompleted = isGameRunningOrCompleted(game)
+            const notWaitingOrStarting = game.state !== 'starting' && game.state !== 'waiting'
             if (game && !runningOrCompleted) {
+                if (game.state === 'starting' && playerIds.length >= 2) {
+                    game.state = 'waiting'
+                } else if (notWaitingOrStarting && noPlayers) {
+                    delete state.games[game.id]
+                }
                 delete game.players[socketUUID]
             } else if (game && runningOrCompleted) {
                 game.players[socketUUID].disconnected = true
@@ -164,7 +180,13 @@ const init = async () => {
                         game.players[socketUUID].finished = true
 
                         const playerIds = Object.keys(game.players)
-                        if (playerIds.every((id) => game.players[id].finished)) {
+                        if (
+                            playerIds.every((id) => {
+                                let finished = game.players[id].finished
+                                console.log('finished:', finished)
+                                return finished
+                            })
+                        ) {
                             createNewGame().then((nextId) => {
                                 game.state = 'completed'
                                 game.next = nextId
@@ -175,22 +197,23 @@ const init = async () => {
                                 const nextGame = await createNewGame()
                                 game.state = 'completed'
                                 game.next = nextGame
+                                setTimeout(() => {
+                                    delete state.games[game.id]
+                                }, 20000)
                             }, 15000)
                         }
-
-                        // handle new game
                     }
 
                     game.players[socketUUID] = updatedPlayer
 
-                    console.log(
-                        'user',
-                        socketUUID.slice(0, 8),
-                        'wpm',
-                        updatedPlayer.wpm,
-                        'words typed',
-                        updatedPlayer.wordIndex
-                    )
+                    // console.log(
+                    //     'user',
+                    //     socketUUID.slice(0, 8),
+                    //     'wpm',
+                    //     updatedPlayer.wpm,
+                    //     'words typed',
+                    //     updatedPlayer.wordIndex
+                    // )
                     return
                 }
                 default:
