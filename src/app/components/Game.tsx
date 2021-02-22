@@ -33,23 +33,41 @@ const Game = ({ gameId }: { gameId: string }) => {
             let data = JSON.parse(msg)
             let { code, payload } = data
             switch (code) {
-                case 'game_register':
+                case 'game_register': {
                     getById(payload.textId).then((text) => {
                         setTextInstance(textToTextInstance(text))
                         const newGameInstance = { ...gameInstance, ...payload }
                         updateGameInstance(newGameInstance)
                     })
-
-                    break
-                case 'ping':
+                    return
+                }
+                case 'ping': {
                     setPing(payload.ping)
-                    break
-                case 'game_state':
-                    const updated = { ...gameInstance, ...payload }
+                    return
+                }
+                case 'next_game': {
+                    const updated: GameInstance = { ...gameInstance, next: payload.next }
                     updateGameInstance(updated)
-                    break
-                default:
-                    break
+                    return
+                }
+                case 'game_started': {
+                    const updated: GameInstance = { ...gameInstance, startedAt: payload.startedAt }
+                    updateGameInstance(updated)
+                    return
+                }
+                case 'game_state': {
+                    const updated: GameInstance = { ...gameInstance, state: payload.state }
+                    updateGameInstance(updated)
+                    return
+                }
+                case 'players_state': {
+                    const updated: GameInstance = { ...gameInstance, players: payload.players }
+                    updateGameInstance(updated)
+                    return
+                }
+                default: {
+                    return
+                }
             }
         })
     }
@@ -72,7 +90,7 @@ const Game = ({ gameId }: { gameId: string }) => {
             inputContent: e.target.value
         }
 
-        let update = updateTextInstanceThroughEvent(newTextInstance)
+        let update = updateTextInstanceThroughEvent(newTextInstance, gameInstance)
         if (!update.currentWord) {
             if (!update.words.every((word) => word.typed)) return
             gateway.send({

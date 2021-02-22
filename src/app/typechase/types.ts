@@ -78,6 +78,7 @@ export interface GameInstance {
     words: number
     spectator: boolean
     next: null | string
+    startedAt: null | number
 }
 
 /*

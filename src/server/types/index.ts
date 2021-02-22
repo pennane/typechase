@@ -35,6 +35,7 @@ export interface Game {
     textId: string
     words: number
     next: null | string
+    startedAt: null | number
 }
 
 export interface TypechaseRedisState {

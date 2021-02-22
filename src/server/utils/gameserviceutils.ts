@@ -2,7 +2,8 @@ import { randomFromRange } from './utils'
 import { Game, Player, TypechaseRedisState } from '../types'
 
 export const isGameJoinable = (game: Game): boolean => {
-    return game.state !== 'running' && game.state !== 'finishing' && game.state !== 'completed'
+    const inviableState = game.state === 'running' || game.state === 'finishing' || game.state === 'completed'
+    return !inviableState
 }
 
 export const isGameCompleted = (game): boolean => {

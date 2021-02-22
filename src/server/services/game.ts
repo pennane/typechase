@@ -4,7 +4,7 @@ import config from '../../../config/process'
 import { v4 } from 'uuid'
 import textService from './text'
 import { randomFromArray } from '../utils/utils'
-import { TypechaseRedisState, Player } from '../types'
+import { TypechaseRedisState, Player, Game } from '../types'
 import {
     isGameRunningOrCompleted,
     getGameIDS,
@@ -16,6 +16,7 @@ import {
     allPlayersFinished,
     hasNoPlayers
 } from '../utils/gameserviceutils'
+import { GameState } from 'src/app/typechase'
 
 const state: TypechaseRedisState = {
     games: {}
@@ -37,14 +38,17 @@ const createNewGame = async (): Promise<string> => {
     const randomText = await textService.getRandom()
     const id = v4()
 
-    state.games[id] = {
+    const game: Game = {
         id: id,
         state: 'waiting',
-        players: {},
         textId: randomText.id,
         words: randomText.words,
-        next: null
+        next: null,
+        startedAt: null,
+        players: {}
     }
+
+    state.games[id] = game
 
     setTimeout(() => {
         const game = state.games[id]
@@ -60,18 +64,37 @@ const init = async () => {
     const wss = new ws.Server({ port: config.ports.gateway })
     const rpub = new Redis(6379, 'redis')
 
-    // Game checks for updates 2,5 times per second
+    const publishGameChange = (gameId: string, code: string, payload: any): void => {
+        rpub.publish(
+            `game-${gameId}`,
+            JSON.stringify({
+                code,
+                payload
+            })
+        )
+    }
+
+    const setGameState = (game: Game, gameState: GameState): void => {
+        game.state = gameState
+        publishGameChange(game.id, 'game_state', { state: gameState })
+    }
+
+    const setNextGame = (game: Game, nextGameId: string): void => {
+        game.next = nextGameId
+        publishGameChange(game.id, 'next_game', { next: nextGameId })
+    }
+
+    const setStarted = (game: Game, startedAt: number): void => {
+        game.startedAt = startedAt
+        publishGameChange(game.id, 'game_started', { startedAt: startedAt })
+    }
+
+    // Game checks for updates 2,5 times per second and publishes them
     setInterval(() => {
         const gameIds = getGameIDS(state)
         gameIds.forEach((id) => {
             const game = state.games[id]
-            rpub.publish(
-                `game-${id}`,
-                JSON.stringify({
-                    code: 'game_state',
-                    payload: { players: game.players, state: game.state, next: game.next }
-                })
-            )
+            publishGameChange(id, 'players_state', { players: game.players })
         })
     }, 400)
 
@@ -82,7 +105,7 @@ const init = async () => {
         const socketUUID = v4()
         const game = state.games[gameId]
 
-        if (!game) return socket.terminate()
+        if (!game) return //socket.terminate()
 
         const rsub = new Redis(6379, 'redis')
 
@@ -93,25 +116,19 @@ const init = async () => {
         player.spectator = !isGameJoinable(game)
         game.players[socketUUID] = player
 
-        // Sending the player a package containing game related user information
-        socket.send(
-            JSON.stringify({
-                code: 'game_register',
-                payload: { ...game, uuid: player.uuid, spectator: player.spectator }
-            })
-        )
-
         if (shouldGameStart(game)) {
-            game.state = 'starting'
+            setGameState(game, 'starting')
             setTimeout(() => {
                 // Check that players have not left in the starting face
-                if (getPlayerIDs(game).length < 2) {
-                    game.state = 'waiting'
+                if (getPlayerIDs(game).length < 2 && game.state === 'starting') {
+                    setGameState(game, 'waiting')
                     return
                 }
 
-                console.log(`starting game ${game.id}`)
-                game.state = 'running'
+                setGameState(game, 'running')
+                if (!game.startedAt) {
+                    setStarted(game, Date.now())
+                }
             }, 8000)
         }
 
@@ -143,12 +160,12 @@ const init = async () => {
                     game.players[socketUUID].finished = true
 
                     if (game.state !== 'finishing') {
-                        game.state = 'finishing'
+                        setGameState(game, 'finishing')
                     }
 
                     if (allPlayersFinished(game)) {
                         createNewGame().then((nextId) => {
-                            game.state = 'completed'
+                            setGameState(game, 'completed')
                             game.next = nextId
                             setTimeout(() => {
                                 delete state.games[game.id]
@@ -159,8 +176,8 @@ const init = async () => {
                             if (game.state === 'completed') return
 
                             const nextGame = await createNewGame()
-                            game.state = 'completed'
-                            game.next = nextGame
+                            setGameState(game, 'completed')
+                            setNextGame(game, nextGame)
                             setTimeout(() => {
                                 delete state.games[game.id]
                             }, 8000)
@@ -214,7 +231,7 @@ const init = async () => {
             const playerIds = getPlayerIDs(game)
 
             if (game.state === 'starting' && playerIds.length < 2) {
-                game.state = 'waiting'
+                setGameState(game, 'waiting')
             }
 
             delete game.players[socketUUID]
@@ -225,12 +242,19 @@ const init = async () => {
                 delete state.games[game.id]
             }
         })
-
         // subscribe to game updates
         rsub.subscribe(`game-${game.id}`)
         rsub.on('message', (_channel, message) => {
             socket.send(message)
         })
+
+        // Sending the player a package containing game related user information
+        socket.send(
+            JSON.stringify({
+                code: 'game_register',
+                payload: { ...game, uuid: player.uuid, spectator: player.spectator }
+            })
+        )
     })
 }
 

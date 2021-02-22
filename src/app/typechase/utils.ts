@@ -83,7 +83,14 @@ export function matchInputToWord(input: string, word: Typechase.TextInstanceWord
     }
 }
 
-export function updateTextInstanceThroughEvent(textInstance: Typechase.TextInstance): Typechase.TextInstance | null {
+export function updateTextInstanceThroughEvent(
+    textInstance: Typechase.TextInstance,
+    gameInstance: Typechase.GameInstance
+): Typechase.TextInstance | null {
+    if (textInstance.words[0].startedAt !== gameInstance.startedAt) {
+        textInstance.words[0].startedAt = gameInstance.startedAt
+        console.log(textInstance.words[0].startedAt)
+    }
     let currentWord = matchInputToWord(textInstance.inputContent, textInstance.currentWord)
     let accuracy
     let highestWpm
