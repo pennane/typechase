@@ -17,8 +17,8 @@ const Player = ({ player, me, words }: { player: GamePlayer; me: boolean; words:
         <div className={me ? 'player you' : 'player'}>
             <div className="player-info">
                 <div className="player-name-container">
-                    <span className="player-name">
-                        {player.guest ? `Guest-${player.uuid.slice(0, 3)}` : player.name || 'unknown'}{' '}
+                    <span className={player.finished ? 'player-name finished' : 'player-name'}>
+                        {player.guest && !player.name ? `Guest-${player.uuid.slice(0, 3)}` : player.name || 'unknown'}{' '}
                     </span>
                     {me && <span className="player-you">(you)</span>}
                 </div>

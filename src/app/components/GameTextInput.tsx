@@ -29,15 +29,7 @@ const GameTextInput = ({
         }
     }
 
-    return (
-        <input
-            ref={textInput}
-            value={textInstance.inputContent}
-            onChange={inputChange}
-            onFocus={forceFocusState}
-            onBlur={forceFocusState}
-        />
-    )
+    return <input className="text-input" ref={textInput} value={textInstance.inputContent} onChange={inputChange} />
 }
 
 export default GameTextInput

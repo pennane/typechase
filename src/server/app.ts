@@ -1,4 +1,5 @@
-import gateway from './services/game'
+// Start the weboscket server
+import './services/game'
 
 import express from 'express'
 import cors from 'cors'
@@ -12,8 +13,6 @@ import middleware from './utils/middleware'
 const store = connectRedis(session)
 
 const redisClient = redis.createClient({ host: 'redis', port: 6379 })
-
-gateway()
 
 const app = express()
 

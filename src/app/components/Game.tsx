@@ -8,6 +8,7 @@ import GamePlayers from './GamePlayers'
 
 const Game = ({ gameId }: { gameId: string }) => {
     let gateway = getGateway(gameId)
+    let [name, setName] = useState(null)
     let [textInstance, setTextInstance]: [TextInstance | null, any] = useState(null)
     let [gameInstance, setGameInstance]: [GameInstance | null, any] = useState(null)
     let [ping, setPing] = useState(null)
@@ -61,7 +62,7 @@ const Game = ({ gameId }: { gameId: string }) => {
                     return
                 }
                 case 'players_state': {
-                    const updated: GameInstance = { ...gameInstance, players: payload.players }
+                    const updated: GameInstance = { ...gameInstance, players: payload.players, state: payload.state }
                     updateGameInstance(updated)
                     return
                 }
@@ -74,9 +75,28 @@ const Game = ({ gameId }: { gameId: string }) => {
 
     if (!textInstance || !gameInstance) return null
 
+    const handleSetName = (e: any) => {
+        e.preventDefault()
+        const newName = e.target.newname.value
+        if (!newName || typeof newName !== 'string' || newName.length > 20) {
+            return
+        }
+        gateway.send({
+            code: 'set_name',
+            payload: {
+                name: newName
+            }
+        })
+        setName(newName)
+    }
+
     const newGame = (id: string) => {
         gateway.stop()
         gateway.setGameId(id)
+        console.log('this is name:', name)
+        if (name) {
+            gateway.setName(name)
+        }
         gateway.start()
         setTextInstance(null)
         setGameInstance(null)
@@ -94,7 +114,7 @@ const Game = ({ gameId }: { gameId: string }) => {
         if (!update.currentWord) {
             if (!update.words.every((word) => word.typed)) return
             gateway.send({
-                code: 'PLAYER_UPDATE',
+                code: 'player_update',
                 payload: {
                     wpm: update.averageWpm,
                     wordIndex: null,
@@ -103,7 +123,7 @@ const Game = ({ gameId }: { gameId: string }) => {
             })
         } else if (update.currentWord.index !== textInstance.currentWord.index) {
             gateway.send({
-                code: 'PLAYER_UPDATE',
+                code: 'player_update',
                 payload: {
                     wpm: update.averageWpm,
                     wordIndex: update.currentWord.index,
@@ -121,6 +141,12 @@ const Game = ({ gameId }: { gameId: string }) => {
 
     return (
         <div className={`game ${gameInstance.state}`}>
+            <div className="set-name">
+                <form className="set-name-form" onSubmit={(e) => handleSetName(e)}>
+                    <input className="set-name-input" placeholder="playername" id="newname" type="text"></input>
+                    <input className="set-name-submit" type="submit" value="set player name" />
+                </form>
+            </div>
             <div className="game-stats">
                 <p>Ping: {ping >= 0 ? ping : 'undefined'} ms</p>
                 <p>Wpm: {textInstance.averageWpm || 0}</p>

@@ -22,6 +22,7 @@ export interface Player {
     spectator: boolean
     theme: [number, number, number]
     guest: boolean
+    name: string | null
 }
 
 export type GameState = 'waiting' | 'running' | 'completed' | 'cancelled' | 'starting' | 'finishing'

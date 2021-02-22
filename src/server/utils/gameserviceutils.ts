@@ -29,7 +29,7 @@ export const shouldGameStart = (game): boolean => {
     return playerIds.length >= 2 && applicableGameState
 }
 
-export const createNewGuestPlayer = (uuid): Player => {
+export const createNewGuestPlayer = (uuid: string, name?: string): Player => {
     return {
         uuid: uuid,
         wpm: null,
@@ -38,7 +38,8 @@ export const createNewGuestPlayer = (uuid): Player => {
         disconnected: false,
         spectator: false,
         theme: [randomFromRange(0, 360), randomFromRange(0, 360), randomFromRange(0, 360)],
-        guest: true
+        guest: true,
+        name: name || null
     }
 }
 

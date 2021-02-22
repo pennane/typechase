@@ -8,6 +8,7 @@ class Gateway {
     callback: any
     connection: WebSocket
     gameId: string
+    name: string | null
 
     constructor() {
         this.connected = false
@@ -19,9 +20,16 @@ class Gateway {
         this.gameId = gameId
     }
 
+    setName(name: string) {
+        this.name = name
+    }
+
     start() {
         if (!this.gameId) throw new Error('Trying to start the gateway without provided game id')
-        this.connection = new WebSocket(encodeURI(`${GATEWAY_URL}?gameid=${this.gameId}`))
+        console.log('this is name:', this.name)
+        this.connection = this.name
+            ? new WebSocket(encodeURI(`${GATEWAY_URL}?gameid=${this.gameId}&name=${this.name}`))
+            : new WebSocket(encodeURI(`${GATEWAY_URL}?gameid=${this.gameId}`))
 
         this.connection.onopen = this.onOpen.bind(this)
         this.connection.onmessage = this.onMessage.bind(this)
