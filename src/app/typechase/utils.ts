@@ -89,7 +89,6 @@ export function updateTextInstanceThroughEvent(
 ): Typechase.TextInstance | null {
     if (textInstance.words[0].startedAt !== gameInstance.startedAt) {
         textInstance.words[0].startedAt = gameInstance.startedAt
-        console.log(textInstance.words[0].startedAt)
     }
     let currentWord = matchInputToWord(textInstance.inputContent, textInstance.currentWord)
     let accuracy
