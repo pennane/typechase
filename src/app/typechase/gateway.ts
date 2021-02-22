@@ -26,7 +26,6 @@ class Gateway {
 
     start() {
         if (!this.gameId) throw new Error('Trying to start the gateway without provided game id')
-        console.log('this is name:', this.name)
         this.connection = this.name
             ? new WebSocket(encodeURI(`${GATEWAY_URL}?gameid=${this.gameId}&name=${this.name}`))
             : new WebSocket(encodeURI(`${GATEWAY_URL}?gameid=${this.gameId}`))
