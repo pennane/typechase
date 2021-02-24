@@ -102,7 +102,6 @@ wss.on('connection', (socket, req) => {
     const params = new URLSearchParams(req.url.slice(2))
     const gameId = params.get('gameid')
     const predefinedName = params.get('name')
-    console.log(predefinedName)
     const socketUUID = v4()
     const game = state.games[gameId]
 
@@ -142,10 +141,8 @@ wss.on('connection', (socket, req) => {
 
         switch (code) {
             case 'set_name': {
-                console.log('in set name')
                 const newName = payload.name
                 if (!newName || typeof newName !== 'string' || newName.length > 20) return
-                console.log('valid, setting')
                 game.players[socketUUID].name = newName
                 return
             }

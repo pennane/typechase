@@ -93,7 +93,6 @@ const Game = ({ gameId }: { gameId: string }) => {
     const newGame = (id: string) => {
         gateway.stop()
         gateway.setGameId(id)
-        console.log('this is name:', name)
         if (name) {
             gateway.setName(name)
         }
