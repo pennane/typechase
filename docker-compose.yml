@@ -8,8 +8,10 @@ services:
         volumes:
             - ./:/opt/src
         command: bash -c 'cd /opt/src && npm install && npm run build:front && npm run start:back'
+        restart: allways
     redis:
         container_name: typechase_redis
         image: redis:5.0.3
         volumes:
             - ./var/docker/redis:/data
+        restart: allways
