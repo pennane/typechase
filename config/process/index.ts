@@ -1,6 +1,6 @@
 let ports = {
     server: 80,
-    gateway: 80,
+    gateway: 8000,
     app: 8080
 }
 
