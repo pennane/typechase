@@ -1,6 +1,6 @@
 version: '3'
 services:
-    server:
+    backend:
         container_name: typechase_backend
         image: node:15.5.1
         volumes:
