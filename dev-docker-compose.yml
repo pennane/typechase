@@ -5,7 +5,7 @@ services:
         image: node:15.5.1
         ports:
             - '80:80'
-            - '8000:8000'
+            - '8010:8010'
         volumes:
             - ./:/opt/src
         command: bash -c 'cd /opt/src && npm install && npm run dev:back'

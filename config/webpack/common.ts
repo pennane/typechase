@@ -1,6 +1,5 @@
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import processConfig from '../process'
 import path from 'path'
 
 const config: webpack.Configuration = {
