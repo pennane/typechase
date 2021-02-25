@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start:back": "ts-node src/server/index.ts",
-    "dev:front": "NODE_ENV=development webpack serve --config config/webpack/dev.ts",
-    "dev:back": "nodemon --watch src/server --ext ts --exec NODE_ENV=development ts-node src/server/index.ts",
+    "dev:front": "node_env=development webpack serve --config config/webpack/dev.ts",
+    "dev:back": "nodemon --watch src/server --ext ts --exec npm run start:back",
     "dev": "npm run dev:front & docker-compose -f 'dev-docker-compose.yml' up",
     "build:front": "webpack --config=config/webpack/prod.ts",
     "serve": "docker-compose --file docker-compose.yml up"
@@ -24,7 +24,6 @@
     "connect-redis": "^5.1.0",
     "cors": "^2.8.5",
     "css-minimizer-webpack-plugin": "^1.2.0",
-    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "ioredis": "^4.22.0",

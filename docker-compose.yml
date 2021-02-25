@@ -6,10 +6,9 @@ services:
         ports:
             - '80:80'
             - '8000:8000'
-            - '443:443'
         volumes:
             - ./:/opt/src
-        command: bash -c 'cd /opt/src && npm install && NODE_ENV=production npm run build:front && NODE_ENV=production npm run start:back'
+        command: bash -c 'cd /opt/src && npm install && npm run build:front && npm run start:back'
         restart: unless-stopped
     redis:
         container_name: typechase_redis
