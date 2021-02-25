@@ -60,7 +60,7 @@ const createNewGame = async (): Promise<string> => {
     return id
 }
 
-const wss = new ws.Server({ port: config.ports.gateway })
+const wss = new ws.Server({ port: 8000 })
 const rpub = new Redis(6379, 'redis')
 
 const publishGameChange = (gameId: string, code: string, payload: any): void => {

@@ -9,6 +9,7 @@ import connectRedis from 'connect-redis'
 import textRouter from './controllers/texts'
 import gameRouter from './controllers/games'
 import middleware from './utils/middleware'
+import config from '../../config/process'
 
 const store = connectRedis(session)
 
@@ -22,7 +23,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(
     session({
         store: new store({ client: redisClient }),
-        secret: 'aterrifyinglyspookysecret',
+        secret: config.session.secret,
         resave: false,
         saveUninitialized: true
     })

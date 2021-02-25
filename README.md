@@ -17,6 +17,7 @@ In the future the intension is to bring another database and implement authentic
 ```
 git clone https://github.com/Pennane/typechase
 cd typechase
+cp .env.production.sample .env.production.local
 npm run serve
 --> http://localhost
 ```
@@ -25,6 +26,7 @@ npm run serve
 
 ```
 cd typechase
+cp .env.development.sample .env.development.local
 npm run dev
 --> http://localhost:8080
 ```
