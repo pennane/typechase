@@ -1,6 +1,7 @@
 import { merge } from 'webpack-merge'
 import common from './common'
 import webpack from 'webpack'
+import processConfig from '../process'
 
 const config: webpack.Configuration = merge(common, {
     mode: 'development',
@@ -11,7 +12,7 @@ const config: webpack.Configuration = merge(common, {
     devServer: {
         historyApiFallback: true,
         host: '127.0.0.1',
-        port: 8080,
+        port: processConfig.ports.app,
         open: true,
         hot: true
     },

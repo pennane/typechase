@@ -1,4 +1,6 @@
-const GATEWAY_URL = `ws://${window.location.hostname}:${8010}`
+import processConfig from '../../../config/process'
+
+const GATEWAY_URL = `ws://${window.location.hostname}:${processConfig.ports.gateway}`
 
 class Gateway {
     connected: boolean
