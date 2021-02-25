@@ -9,7 +9,6 @@ services:
             - '443:443'
         volumes:
             - ./:/opt/src
-            - /etc/letsencrypt/live/typechase.pennanen.dev:/letsencrypt
         command: bash -c 'cd /opt/src && npm install && NODE_ENV=production npm run build:front && NODE_ENV=production npm run start:back'
         restart: unless-stopped
     redis:
