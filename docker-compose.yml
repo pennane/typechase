@@ -23,9 +23,7 @@ services:
             - '443:443'
             - '8010:8010'
         volumes:
-            - type: bind
-              source: ./var/docker/nginx/nginx.conf
-              target: /etc/nginx/nginx.conf
+            - ./var/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
         networks:
             - nginx.docker
 
