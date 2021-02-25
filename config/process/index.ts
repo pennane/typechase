@@ -1,5 +1,6 @@
 import fs from 'fs'
 import dotenv from 'dotenv'
+import path from 'path'
 
 if (process.env.NODE_ENV === 'development') {
     dotenv.config({ path: '.env.development.local' })
@@ -8,16 +9,29 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const sslFilePaths = {
-    privateKey: '/letsencrypt/privkey.pem',
-    certificate: '/letsencrypt/cert.pem',
-    ca: '/letsencrypt/chain.pem'
+    privateKey: path.format({ dir: '/letsencrypt', base: 'privkey.pem' }),
+    certificate: path.format({ dir: '/letsencrypt', base: 'cert.pem' }),
+    ca: path.format({ dir: '/letsencrypt', base: 'chain.pem' })
 }
 
 let ssl = {
-    privateKey: fs.existsSync(sslFilePaths.privateKey) ? fs.readFileSync(sslFilePaths.privateKey, 'utf8') : null,
-    certificate: fs.existsSync(sslFilePaths.certificate) ? fs.readFileSync(sslFilePaths.certificate, 'utf8') : null,
-    ca: fs.existsSync(sslFilePaths.ca) ? fs.readFileSync(sslFilePaths.ca, 'utf8') : null
+    privateKey: fs.existsSync(sslFilePaths.privateKey)
+        ? fs.readFileSync(sslFilePaths.privateKey, {
+              encoding: 'utf8'
+          })
+        : null,
+    certificate: fs.existsSync(sslFilePaths.certificate)
+        ? fs.readFileSync(sslFilePaths.certificate, {
+              encoding: 'utf8'
+          })
+        : null,
+    ca: fs.existsSync(sslFilePaths.ca)
+        ? fs.readFileSync(sslFilePaths.ca, {
+              encoding: 'utf8'
+          })
+        : null
 }
+
 Object.keys(ssl).forEach((val) => {
     console.log(val, ssl[val])
 })
