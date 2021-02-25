@@ -3,16 +3,33 @@ services:
     server:
         container_name: typechase_backend
         image: node:15.5.1
-        ports:
-            - '8080:8080'
-            - '8010:8010'
         volumes:
             - ./:/opt/src
         command: bash -c 'cd /opt/src && npm install && npm run build:front && npm run start:back'
         restart: unless-stopped
+        networks:
+            - nginx.docker
     redis:
         container_name: typechase_redis
         image: redis:5.0.3
         volumes:
             - ./var/docker/redis:/data
         restart: unless-stopped
+    nginx:
+        image: nginx:alpine
+        container_name: nginx
+        ports:
+            - '80:80'
+            - '443:443'
+            - '8010:8010'
+        volumes:
+            - type: bind
+              source: ./var/nginx/nginx.conf
+              target: /etc/nginx/nginx.conf
+        networks:
+            - nginx.docker
+
+networks:
+    nginx.docker:
+        name: nginx.docker
+        external: true
