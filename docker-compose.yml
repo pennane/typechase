@@ -23,11 +23,18 @@ services:
             - '443:443'
             - '8010:8010'
         volumes:
+            - ./var/docker/certbot/conf:/etc/letsencrypt
+            - ./var/docker/certbot/www:/var/www/certbot
             - type: bind
-              source: ./var/nginx/nginx.conf
+              source: ./var/docker/nginx/nginx.conf
               target: /etc/nginx/nginx.conf
         networks:
             - nginx.docker
+    certbot:
+        image: certbot/certbot
+        volumes:
+            - ./var/docker/certbot/conf:/etc/letsencrypt
+            - ./var/docker/certbot/www:/var/www/certbot
 
 networks:
     nginx.docker:
