@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useRef } from 'react'
-import { GameState, TextInstance } from '../../Typechase'
+import { GameState, TextInstance } from '../../typechase'
 
 const GameTextInput = ({
     textInstance,

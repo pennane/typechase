@@ -19,7 +19,7 @@ import {
     isGameInviteGame,
     getGamePlayerAmount
 } from '../utils/gameserviceutils'
-import { GameState } from 'src/app/Typechase'
+import { GameState } from 'src/app/typechase'
 
 const state: TypechaseRedisState = {
     games: {},

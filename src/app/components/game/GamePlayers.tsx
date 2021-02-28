@@ -1,5 +1,5 @@
 import React from 'react'
-import { GameInstance, GamePlayer } from '../../Typechase'
+import { GameInstance, GamePlayer } from '../../typechase'
 import PlayerIcon from './PlayerIcon'
 
 const Player = ({ player, me, words }: { player: GamePlayer; me: boolean; words: number }) => {

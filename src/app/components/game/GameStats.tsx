@@ -1,5 +1,5 @@
 import React from 'react'
-import { GameInstance, GameState, TextInstance } from '../../Typechase'
+import { GameInstance, GameState, TextInstance } from '../../typechase'
 
 const GameStateDisplay = ({ state }: { state: GameState }) => {
     const mapStateToText = (state: GameState) => {
