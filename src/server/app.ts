@@ -1,6 +1,7 @@
 // Start the weboscket server
 import './services/game'
 
+import path from 'path'
 import express from 'express'
 import cors from 'cors'
 import redis from 'redis'
@@ -30,6 +31,6 @@ app.use(
 app.use('/api/text', textRouter)
 app.use('/api/game', gameRouter)
 app.use(express.static('dist'))
-app.use(middleware.unknownEndpoint)
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../../dist/index.html')))
 
 export default app
