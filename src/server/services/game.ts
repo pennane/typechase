@@ -142,10 +142,9 @@ wss.on('connection', (socket, req) => {
     const params = new URLSearchParams(req.url.slice(2))
     const gameId = params.get('gameid')
     const predefinedName = params.get('name')
-    const predefinedTheme = params
-        .get('theme')
-        .split(',')
-        .map((v) => Number(v))
+    const rawPredefinedTheme = params.get('theme')
+    let predefinedTheme
+    rawPredefinedTheme ? (predefinedTheme = rawPredefinedTheme.split(',').map((v) => Number(v))) : null
     const socketUUID = v4()
     const game = state.games[gameId]
 
