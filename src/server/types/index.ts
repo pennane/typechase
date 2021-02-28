@@ -29,6 +29,7 @@ export type GameState = 'waiting' | 'running' | 'completed' | 'cancelled' | 'sta
 
 export interface Game {
     id: string
+    invitationId: string | null
     state: GameState
     players: {
         [uuid: string]: Player
@@ -43,4 +44,5 @@ export interface TypechaseRedisState {
     games: {
         [id: string]: Game
     }
+    invitationIDs: string[]
 }

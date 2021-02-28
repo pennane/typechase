@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { getById } from '../services/texts'
-import { GameInstance, getGateway, TextInstance, textToTextInstance } from '../typechase'
-import { updateTextInstanceThroughEvent } from '../typechase'
+import { getById } from '../../services/texts'
+import { GameInstance, getGateway, TextInstance, textToTextInstance } from '../../Typechase'
+import { updateTextInstanceThroughEvent } from '../../Typechase'
 import GameText from './GameText'
 import GameTextInput from './GameTextInput'
 import GamePlayers from './GamePlayers'
+import GameStats from './GameStats'
+import PlayerIcon from './PlayerIcon'
 
 const Game = ({ gameId }: { gameId: string }) => {
-    let gateway = getGateway(gameId)
-    let [name, setName] = useState(null)
+    let gateway = getGateway({
+        gameId,
+        name: localStorage.getItem('typechase.guestname'),
+        theme: JSON.parse(localStorage.getItem('typechase.guesttheme'))
+    })
+    let [guestName, setGuestname] = useState(null)
+    let [guestTheme, setGuestTheme] = useState(null)
     let [textInstance, setTextInstance]: [TextInstance | null, any] = useState(null)
     let [gameInstance, setGameInstance]: [GameInstance | null, any] = useState(null)
     let [ping, setPing] = useState(null)
@@ -25,6 +32,16 @@ const Game = ({ gameId }: { gameId: string }) => {
         processFeed()
     }, [gameInstance])
 
+    const updateGuestName = (guestname: string) => {
+        setGuestname(guestname)
+        localStorage.setItem('typechase.guestname', guestname)
+    }
+
+    const updateGuestTheme = (theme) => {
+        setGuestTheme(theme)
+        localStorage.setItem('typechase.guesttheme', JSON.stringify(theme))
+    }
+
     const updateGameInstance = (payload) => {
         setGameInstance((oldInstance) => ({ ...oldInstance, ...payload }))
     }
@@ -38,6 +55,8 @@ const Game = ({ gameId }: { gameId: string }) => {
                     getById(payload.textId).then((text) => {
                         setTextInstance(textToTextInstance(text))
                         const newGameInstance = { ...gameInstance, ...payload }
+                        payload.name ? updateGuestName(payload.name) : null
+                        payload.theme ? updateGuestTheme(payload.theme) : null
                         updateGameInstance(newGameInstance)
                     })
                     return
@@ -87,15 +106,13 @@ const Game = ({ gameId }: { gameId: string }) => {
                 name: newName
             }
         })
-        setName(newName)
+        updateGuestName(newName)
     }
 
     const newGame = (id: string) => {
         gateway.stop()
         gateway.setGameId(id)
-        if (name) {
-            gateway.setName(name)
-        }
+        gateway.setGuestData(guestName, guestTheme)
         gateway.start()
         setTextInstance(null)
         setGameInstance(null)
@@ -139,19 +156,20 @@ const Game = ({ gameId }: { gameId: string }) => {
     }
 
     return (
-        <div className={`game ${gameInstance.state}`}>
+        <div className={`game ${gameInstance.state} ${gameInstance.spectator ? 'spectator' : ''}`}>
             <div className="set-name">
                 <form className="set-name-form" onSubmit={(e) => handleSetName(e)}>
                     <input className="set-name-input" placeholder="playername" id="newname" type="text"></input>
                     <input className="set-name-submit" type="submit" value="set player name" />
                 </form>
+                {guestName && (
+                    <div className="current-name">
+                        <span className="current-name-value">{guestName}</span>
+                        {guestTheme && <PlayerIcon theme={guestTheme} />}
+                    </div>
+                )}
             </div>
-            <div className="game-stats">
-                <p>Ping: {ping >= 0 ? ping : 'undefined'} ms</p>
-                <p>Wpm: {textInstance.averageWpm || 0}</p>
-                <p>Accuracy: {textInstance.accuracy ? Math.floor(textInstance.accuracy * 100) : 100}%</p>
-                <p>Game state: '{gameInstance.state}'</p>
-            </div>
+            <GameStats ping={ping} gameInstance={gameInstance} textInstance={textInstance} />
             <GamePlayers gameInstance={gameInstance} />
             <GameText textInstance={textInstance} />
             <GameTextInput
@@ -164,6 +182,23 @@ const Game = ({ gameId }: { gameId: string }) => {
                 <button className="next-game" onClick={() => newGame(gameInstance.next)}>
                     continue to new game
                 </button>
+            )}
+            {gameInstance.invitationId && (
+                <div className="game-invite">
+                    <p>Invite chasers to play with you with this link</p>
+                    <input
+                        className="game-invite-link"
+                        type="text"
+                        readOnly={true}
+                        value={
+                            window.location.protocol +
+                            '//' +
+                            window.location.host +
+                            '/game?invitation=' +
+                            gameInstance.invitationId
+                        }
+                    />
+                </div>
             )}
         </div>
     )

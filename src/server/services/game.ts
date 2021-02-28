@@ -8,33 +8,72 @@ import { TypechaseRedisState, Player, Game } from '../types'
 import {
     isGameRunningOrCompleted,
     getGameIDS,
-    createNewGuestPlayer,
+    getGames,
+    createGuestPlayer,
     isGameJoinable,
     shouldGameStart,
     getPlayerIDs,
     isGameRunning,
     allPlayersFinished,
-    hasNoPlayers
+    hasNoPlayers,
+    isGameInviteGame,
+    getGamePlayerAmount
 } from '../utils/gameserviceutils'
-import { GameState } from 'src/app/typechase'
+import { GameState } from 'src/app/Typechase'
 
 const state: TypechaseRedisState = {
-    games: {}
+    games: {},
+    invitationIDs: []
 }
 
 export const findJoinableGameId = async (): Promise<string> => {
-    let gameIds = getGameIDS(state)
-    if (gameIds.length === 0 || gameIds.every((id) => isGameRunningOrCompleted(state.games[id]))) {
-        const newGameId = await createNewGame()
-        return newGameId
+    const games = getGames(state)
+
+    const joinableGames = games.filter(
+        (game) => !isGameInviteGame(game) && getGamePlayerAmount(game) < 6 && !isGameRunningOrCompleted(game)
+    )
+
+    if (joinableGames.length > 0) {
+        const game: Game = randomFromArray(joinableGames)
+        return game.id
     } else {
-        const possibleGameIds = gameIds.filter((id) => !isGameRunningOrCompleted(state.games[id]))
-        const gameId = randomFromArray(possibleGameIds)
-        return gameId
+        const newGameId = await getNewGameId()
+        return newGameId
     }
 }
 
-const createNewGame = async (): Promise<string> => {
+export const findGameIdForInvitationId = async (invitationId: string): Promise<string> => {
+    if (!state.invitationIDs.includes(invitationId)) return null
+    const games = getGames(state)
+    const game = games.find((game) => game.invitationId === invitationId)
+    return game ? game.id : await getNewGameId(invitationId)
+}
+
+export const getNewInviteOnlyGameId = async (): Promise<string> => {
+    const invitationId = v4()
+    const gameId = await getNewGameId(invitationId)
+    state.invitationIDs.push(invitationId)
+    return gameId
+}
+
+const finishGame = async (game: Game) => {
+    setGameState(game, 'completed')
+    let nextGameId
+    if (game.invitationId) {
+        const invitationId = game.invitationId
+        game.invitationId = null
+        nextGameId = await findGameIdForInvitationId(invitationId)
+    } else {
+        nextGameId = await getNewGameId()
+    }
+
+    setNextGame(game, nextGameId)
+    setTimeout(() => {
+        delete state.games[game.id]
+    }, 8000)
+}
+
+const getNewGameId = async (invitationId?: string): Promise<string> => {
     const randomText = await textService.getRandom()
     const id = v4()
 
@@ -45,7 +84,8 @@ const createNewGame = async (): Promise<string> => {
         words: randomText.words,
         next: null,
         startedAt: null,
-        players: {}
+        players: {},
+        invitationId: invitationId || null
     }
 
     state.games[id] = game
@@ -102,6 +142,10 @@ wss.on('connection', (socket, req) => {
     const params = new URLSearchParams(req.url.slice(2))
     const gameId = params.get('gameid')
     const predefinedName = params.get('name')
+    const predefinedTheme = params
+        .get('theme')
+        .split(',')
+        .map((v) => Number(v))
     const socketUUID = v4()
     const game = state.games[gameId]
 
@@ -112,9 +156,12 @@ wss.on('connection', (socket, req) => {
     let socketAlive: boolean = true
     let pingStart: number | null = null
 
-    const player: Player = createNewGuestPlayer(socketUUID, predefinedName)
+    const player: Player = createGuestPlayer(socketUUID, predefinedName, predefinedTheme)
     player.spectator = !isGameJoinable(game)
-    game.players[socketUUID] = player
+
+    if (!player.spectator) {
+        game.players[socketUUID] = player
+    }
 
     if (shouldGameStart(game)) {
         setGameState(game, 'starting')
@@ -170,23 +217,12 @@ wss.on('connection', (socket, req) => {
                 }
 
                 if (allPlayersFinished(game)) {
-                    createNewGame().then((nextId) => {
-                        setGameState(game, 'completed')
-                        game.next = nextId
-                        setTimeout(() => {
-                            delete state.games[game.id]
-                        }, 20000)
-                    })
+                    if (game.state === 'completed') return
+                    finishGame(game)
                 } else {
                     setTimeout(async () => {
                         if (game.state === 'completed') return
-
-                        const nextGame = await createNewGame()
-                        setGameState(game, 'completed')
-                        setNextGame(game, nextGame)
-                        setTimeout(() => {
-                            delete state.games[game.id]
-                        }, 8000)
+                        finishGame(game)
                     }, 15000)
                 }
 
@@ -225,27 +261,22 @@ wss.on('connection', (socket, req) => {
 
     socket.on('close', () => {
         rsub.disconnect()
-        if (!game) return
-
+        if (!game || !game.players[socketUUID]) return
         const runningOrCompleted = isGameRunningOrCompleted(game)
+        const notWaitingOrStarting = game.state !== 'starting' && game.state !== 'waiting'
 
         if (runningOrCompleted) {
-            return (game.players[socketUUID].disconnected = true)
+            game.players[socketUUID].disconnected = true
+        } else {
+            delete game.players[socketUUID]
         }
 
-        const notWaitingOrStarting = game.state !== 'starting' && game.state !== 'waiting'
         const playerIds = getPlayerIDs(game)
 
-        if (game.state === 'starting' && playerIds.length < 2) {
+        if (notWaitingOrStarting && hasNoPlayers(game)) {
+            finishGame(game)
+        } else if (game.state === 'starting' && playerIds.length < 2) {
             setGameState(game, 'waiting')
-        }
-
-        delete game.players[socketUUID]
-
-        const noPlayers = hasNoPlayers(game)
-
-        if (notWaitingOrStarting && noPlayers) {
-            delete state.games[game.id]
         }
     })
 
@@ -253,7 +284,7 @@ wss.on('connection', (socket, req) => {
     socket.send(
         JSON.stringify({
             code: 'game_register',
-            payload: { ...game, uuid: player.uuid, spectator: player.spectator }
+            payload: { ...game, uuid: player.uuid, name: player.name, spectator: player.spectator, theme: player.theme }
         })
     )
 

@@ -6,6 +6,21 @@
     align-items: center;
 }
 
+.home {
+    display: flex;
+    flex-direction: column;
+}
+
+.home a {
+    color: #3f51b5;
+    text-decoration: underline;
+    line-height: 2;
+}
+
+.home a:hover {
+    color: #6070c7;
+}
+
 .game {
     padding: 2em;
     padding-top: 0.5em;
@@ -21,6 +36,12 @@
     flex: 1 1 auto;
     width: 100%;
     margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+}
+
+.set-name-form {
+    margin-right: 0.5rem;
 }
 
 .set-name-input {
@@ -28,19 +49,40 @@
     width: 95px;
 }
 
+.current-name {
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.current-name-value {
+    font-weight: 600;
+    margin: 0 0.2em 0 0;
+}
+
 .game.waiting {
-    opacity: 0.7;
-    color: #949494;
+    color: #a8a8a8;
 }
 
 .game.waiting .text,
-.game.waiting .text-input {
+.game.waiting .text-input,
+.game.spectator .text,
+.game.spectator .text-input {
     pointer-events: none;
 }
 
+.game.waiting .text-input {
+    opacity: 0.5;
+}
+
 .game.starting {
-    opacity: 0.82;
     color: #949494;
+}
+
+.game.starting input:focus {
+    border-color: #666666;
+    outline-color: #666666;
 }
 
 .game-stats {
@@ -68,6 +110,10 @@
 
 .player {
     display: flex;
+}
+
+.player.disconnected {
+    opacity: 0.4;
 }
 
 .player-name-container {
@@ -102,7 +148,12 @@
     font-size: 0.88rem;
 }
 
-.player-wpm {
+.player-left {
+    font-weight: 500;
+    font-size: 0.88rem;
+}
+
+.game:not(.waiting) .player-wpm {
     color: #555456;
     margin-left: auto;
 
@@ -160,4 +211,17 @@ button.next-game {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.game-invite {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4rem;
+    font-size: 0.9rem;
+}
+
+.game-invite-link {
+    width: 400px;
 }

@@ -1,4 +1,4 @@
-import { Text } from '../typechase'
+import { Text } from '../Typechase'
 
 import axios from 'axios'
 import processConfig from '../../../config/process'

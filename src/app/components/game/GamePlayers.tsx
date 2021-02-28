@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { GameInstance, GamePlayer, randomFromRange } from '../typechase'
+import React from 'react'
+import { GameInstance, GamePlayer } from '../../Typechase'
+import PlayerIcon from './PlayerIcon'
 
 const Player = ({ player, me, words }: { player: GamePlayer; me: boolean; words: number }) => {
     if (player.spectator) return null
@@ -14,24 +15,24 @@ const Player = ({ player, me, words }: { player: GamePlayer; me: boolean; words:
     }
 
     return (
-        <div className={me ? 'player you' : 'player'}>
+        <div className={`player ${me ? 'you' : ''} ${player.disconnected ? 'disconnected' : ''}`}>
             <div className="player-info">
                 <div className="player-name-container">
                     <span className={player.finished ? 'player-name finished' : 'player-name'}>
-                        {player.guest && !player.name ? `Guest-${player.uuid.slice(0, 3)}` : player.name || 'unknown'}{' '}
+                        {player.name || 'unknown'}{' '}
                     </span>
                     {me && <span className="player-you">(you)</span>}
+                    {player.disconnected && <span className="player-left">(left)</span>}
                 </div>
 
                 <span className="player-wpm"> {player.wpm | 0} wpm</span>
             </div>
 
             <div className="player-performance">
-                <div
-                    className="player-icon"
+                <PlayerIcon
+                    theme={player.theme}
                     style={{
-                        left: left,
-                        background: `linear-gradient(${player.theme[0]}deg, hsl(${player.theme[0]}, 100%, 44%), hsl(${player.theme[0]}, 100%, 44%))`
+                        left: left
                     }}
                 />
             </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { TextInstance } from '../typechase'
+import { TextInstance } from '../../Typechase'
 
 const GameText = ({ textInstance }: { textInstance: TextInstance }) => {
     const { words } = textInstance

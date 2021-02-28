@@ -109,7 +109,7 @@ export function updateTextInstanceThroughEvent(
         ...textInstance,
         words: textInstance.words.map((word) => (word.index !== textInstance.currentWord.index ? word : currentWord)),
         currentWord: currentWord.typed ? textInstance.words[currentWord.index + 1] || null : currentWord,
-        inputContent: currentWord.typed ? '' : textInstance.inputContent,
+        inputContent: currentWord.typed ? '' : textInstance.inputContent.slice(0, currentWord.characters.length),
         accuracy: accuracy || textInstance.accuracy,
         highestWpm: highestWpm || textInstance.highestWpm,
         averageWpm: averageWpm || textInstance.averageWpm

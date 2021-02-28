@@ -1,5 +1,21 @@
 import { GameText } from '../types'
 
+const testingTexts: GameText[] = [
+    {
+        id: '85cb9e42-5ea3-5896-9f67-fdd7d8925d29',
+        content: 'Gang shit yo.',
+        words: 3,
+        description: 'ultimate testing text',
+        added: 1614529638015,
+        likes: 0,
+        stats: {
+            totalChases: 0,
+            averageWpm: null,
+            highestWpm: null
+        }
+    }
+]
+
 const texts: GameText[] = [
     {
         id: 'b1d91716-4d5c-4d14-bc12-3524a5cdaecf',
@@ -1358,4 +1374,12 @@ const texts: GameText[] = [
     }
 ]
 
-export default texts
+let outputTexts
+
+if (process.env.NODE_ENV === 'development') {
+    outputTexts = testingTexts
+} else {
+    outputTexts = texts
+}
+
+export default outputTexts

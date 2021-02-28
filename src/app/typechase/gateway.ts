@@ -9,6 +9,7 @@ class Gateway {
     connection: WebSocket
     gameId: string
     name: string | null
+    theme: [number, number, number] | null
 
     constructor() {
         this.connected = false
@@ -20,14 +21,15 @@ class Gateway {
         this.gameId = gameId
     }
 
-    setName(name: string) {
-        this.name = name
+    setGuestData(name?: string | null, theme?: [number, number, number] | null) {
+        name ? (this.name = name) : null
+        theme ? (this.theme = theme) : null
     }
 
     start() {
         if (!this.gameId) throw new Error('Trying to start the gateway without provided game id')
         this.connection = this.name
-            ? new WebSocket(encodeURI(`${GATEWAY_URL}?gameid=${this.gameId}&name=${this.name}`))
+            ? new WebSocket(encodeURI(`${GATEWAY_URL}?gameid=${this.gameId}&name=${this.name}&theme=${this.theme}`))
             : new WebSocket(encodeURI(`${GATEWAY_URL}?gameid=${this.gameId}`))
 
         this.connection.onopen = this.onOpen.bind(this)
@@ -75,7 +77,6 @@ class Gateway {
         if (!this.connected) {
             return
         }
-        console.log('gateway sending data...')
         this.connection.send(JSON.stringify(data))
     }
 
@@ -86,7 +87,9 @@ class Gateway {
 
 const gateway = new Gateway()
 
-export const getGateway = (gameId) => {
+export const getGateway = ({ gameId, name, theme }) => {
     gateway.setGameId(gameId)
+    gateway.setGuestData(name, theme)
+
     return gateway
 }
