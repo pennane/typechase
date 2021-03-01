@@ -165,8 +165,11 @@ wss.on('connection', (socket, req) => {
     if (shouldGameStart(game)) {
         setGameState(game, 'starting')
         setTimeout(() => {
+            let playerIDs = getPlayerIDs(game)
+
             // Check that players have not left in the starting face
-            if (getPlayerIDs(game).length < 2 && game.state === 'starting') {
+            const hasPossibleRejectState = game.state === 'starting' || game.state === 'waiting'
+            if (playerIDs.length < 2 && hasPossibleRejectState) {
                 setGameState(game, 'waiting')
                 return
             }
@@ -175,7 +178,7 @@ wss.on('connection', (socket, req) => {
             if (!game.startedAt) {
                 setStarted(game, Date.now())
             }
-        }, 8000)
+        }, 10000)
     }
 
     socket.on('message', (message: string) => {
@@ -222,7 +225,7 @@ wss.on('connection', (socket, req) => {
                     setTimeout(async () => {
                         if (game.state === 'completed') return
                         finishGame(game)
-                    }, 15000)
+                    }, 20000)
                 }
 
                 return
