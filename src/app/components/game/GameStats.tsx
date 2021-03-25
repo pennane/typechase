@@ -1,5 +1,5 @@
 import React from 'react'
-import { GameInstance, GameState, TextInstance } from '../../typechase'
+import { GameInstance, GameState, PracticeInstance, TextInstance } from '../../typechase'
 
 const GameStateDisplay = ({ state }: { state: GameState }) => {
     const mapStateToText = (state: GameState) => {
@@ -31,21 +31,29 @@ const GameStateDisplay = ({ state }: { state: GameState }) => {
     return <p className={'game-state ' + state}>{mapStateToText(state)}</p>
 }
 
-const GameStats = ({
-    ping,
-    gameInstance,
-    textInstance
-}: {
+interface OnlineGameStats {
     ping: any
-    gameInstance: GameInstance
+    gameInstance: GameInstance | null
     textInstance: TextInstance
-}) => {
+    practice?: boolean
+}
+
+const GameStats = ({ ping, gameInstance, textInstance, practice }: OnlineGameStats) => {
     return (
         <div className="game-stats">
-            <p>Ping: {ping >= 0 ? ping : 'undefined'} ms</p>
+            {!practice && (
+                <>
+                    <p>Ping: {ping >= 0 ? ping : 'undefined'} ms</p>
+                </>
+            )}
+
             <p>Wpm: {textInstance.averageWpm || 0}</p>
             <p>Accuracy: {textInstance.accuracy ? Math.floor(textInstance.accuracy * 100) : 100}%</p>
-            <GameStateDisplay state={gameInstance.state} />
+            {!practice && (
+                <>
+                    <GameStateDisplay state={gameInstance.state} />
+                </>
+            )}
         </div>
     )
 }

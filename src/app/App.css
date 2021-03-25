@@ -1,3 +1,7 @@
+body {
+    margin: 0;
+}
+
 .typechase {
     width: 100%;
     display: flex;
@@ -9,6 +13,8 @@
 .home {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    margin-top: 1em;
 }
 
 .home a {
@@ -123,7 +129,7 @@
 }
 
 .player-name {
-    max-width: 120px;
+    max-width: 95px;
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
@@ -139,7 +145,7 @@
 
 .player-info {
     display: flex;
-    width: 230px;
+    width: 190px;
 }
 
 .player-you {
@@ -224,4 +230,16 @@ button.next-game {
 
 .game-invite-link {
     width: 400px;
+    max-width: 85vw;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    padding: 1em;
+}
+
+.topbar h4 {
+    margin: 0 0.5em;
+    margin-right: 1em;
 }

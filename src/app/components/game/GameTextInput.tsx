@@ -6,16 +6,19 @@ const GameTextInput = ({
     textInstance,
     inputChange,
     state,
-    spectator
+    spectator,
+    practice
 }: {
     textInstance: TextInstance
     inputChange: any
-    state: GameState
-    spectator: boolean
+    state?: GameState
+    spectator?: boolean
+    practice?: boolean
 }) => {
     let textInput = useRef(null)
 
     useEffect(() => {
+        if (practice) return
         window.addEventListener('focus', forceFocusState)
         return () => {
             window.removeEventListener('focus', forceFocusState)
@@ -23,6 +26,7 @@ const GameTextInput = ({
     })
 
     useEffect(() => {
+        if (practice) return
         if (textInput && textInput.current) {
             forceFocusState()
         }

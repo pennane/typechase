@@ -3,7 +3,6 @@ import { TextInstance } from '../../typechase'
 
 const GameText = ({ textInstance }: { textInstance: TextInstance }) => {
     const { words } = textInstance
-
     return (
         <div className="text">
             {words &&

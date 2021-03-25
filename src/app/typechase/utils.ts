@@ -85,9 +85,10 @@ export function matchInputToWord(input: string, word: Typechase.TextInstanceWord
 
 export function updateTextInstanceThroughEvent(
     textInstance: Typechase.TextInstance,
-    gameInstance: Typechase.GameInstance
+    gameInstance?: Typechase.GameInstance,
+    practice?: boolean
 ): Typechase.TextInstance | null {
-    if (textInstance.words[0].startedAt !== gameInstance.startedAt) {
+    if (!practice && textInstance.words[0].startedAt !== gameInstance.startedAt) {
         textInstance.words[0].startedAt = gameInstance.startedAt
     }
     let currentWord = matchInputToWord(textInstance.inputContent, textInstance.currentWord)
@@ -138,7 +139,6 @@ export function textToTextInstance(text: Typechase.Text): Typechase.TextInstance
             wpm: null
         }
     })
-    let rawCharacters = text.content.split('')
 
     return {
         words,

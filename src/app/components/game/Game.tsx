@@ -22,7 +22,6 @@ const Game = ({ gameId }: { gameId: string }) => {
 
     useEffect(() => {
         gateway.start()
-
         return () => {
             gateway.stop()
         }
