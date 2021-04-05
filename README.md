@@ -2,6 +2,8 @@
 
 wip typing service, absolutely like typeracer
 
+Working demoversion [here](http://46.101.114.132/)
+
 third iteration of the typechase series
 
 inspiration for execution taken from engineer man's node io game `math-arena`
